@@ -1,0 +1,268 @@
+import { useState, memo, useCallback } from 'react';
+import type { UserLocation, RecommendationFilters, UserPreferences } from '../../types/api';
+
+interface SearchFiltersProps {
+  categories: string[];
+  districts: string[];
+  onSearch: (
+    location: UserLocation,
+    preferences?: UserPreferences,
+    filters?: RecommendationFilters,
+    topN?: number
+  ) => void;
+  loading?: boolean;
+}
+
+export const SearchFilters = memo(function SearchFilters({
+  categories,
+  districts,
+  onSearch,
+  loading = false,
+}: SearchFiltersProps) {
+  const [location, setLocation] = useState<UserLocation>({
+    lat: -12.0464, // Centro de Lima
+    long: -77.0428
+  });
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedDistrict, setSelectedDistrict] = useState<string>('');
+  const [minRating, setMinRating] = useState<number>(0);
+  const [maxDistance, setMaxDistance] = useState<number>(10);
+  const [topN, setTopN] = useState<number>(10);
+
+  const handleSearch = useCallback(() => {
+    const preferences: UserPreferences = selectedCategory 
+      ? { category: selectedCategory }
+      : {};
+
+    const filters: RecommendationFilters = {
+      min_rating: minRating > 0 ? minRating : undefined,
+      max_distance_km: maxDistance,
+      district: selectedDistrict || undefined,
+    };
+
+    onSearch(location, preferences, filters, topN);
+  }, [location, selectedCategory, minRating, maxDistance, selectedDistrict, topN, onSearch]);
+
+  const getCurrentLocation = useCallback(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            long: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          alert('No se pudo obtener tu ubicación. Usando ubicación por defecto (Centro de Lima).');
+        }
+      );
+    } else {
+      alert('Tu navegador no soporta geolocalización.');
+    }
+  }, []);
+
+  return (
+    <div className="glass rounded-3xl shadow-2xl p-8 mb-8 backdrop-blur-xl animate-slide-up">
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold text-black mb-3">
+          Configuración de Búsqueda
+        </h2>
+        <p className="text-gray-800 text-base font-medium">
+          Configure los parámetros de búsqueda para obtener recomendaciones personalizadas
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Location */}
+        <div className="glass-dark rounded-2xl p-6 space-y-6">
+          <h3 className="text-lg font-semibold text-white flex items-center gap-3 mb-4">
+            <div className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center">
+              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              </svg>
+            </div>
+            <span>Ubicación</span>
+          </h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="latitude" className="block text-sm font-bold text-white/90 mb-2">
+                Latitud
+              </label>
+              <input
+                id="latitude"
+                type="number"
+                step="0.00001"
+                value={location.lat}
+                onChange={(e) => setLocation(prev => ({ ...prev, lat: parseFloat(e.target.value) || 0 }))}
+                className="w-full px-4 py-3 glass-dark rounded-xl text-white placeholder-white/70 focus-ring border-0 font-medium"
+                placeholder="-12.0464"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="longitude" className="block text-sm font-bold text-white/90 mb-2">
+                Longitud
+              </label>
+              <input
+                id="longitude"
+                type="number"
+                step="0.00001"
+                value={location.long}
+                onChange={(e) => setLocation(prev => ({ ...prev, long: parseFloat(e.target.value) || 0 }))}
+                className="w-full px-4 py-3 glass-dark rounded-xl text-white placeholder-white/70 focus-ring border-0 font-medium"
+                placeholder="-77.0428"
+              />
+            </div>
+
+            <button
+              onClick={getCurrentLocation}
+              className="w-full bg-gradient-to-r from-secondary-600 to-secondary-700 text-white px-4 py-3 rounded-xl hover:from-secondary-700 hover:to-secondary-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              📱 Usar mi ubicación actual
+            </button>
+          </div>
+        </div>
+
+        {/* Preferences */}
+        <div className="glass-dark rounded-2xl p-6 space-y-6">
+          <h3 className="text-lg font-semibold text-white flex items-center gap-3 mb-4">
+            <div className="w-5 h-5 bg-green-600 rounded flex items-center justify-center">
+              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+            <span>Preferencias</span>
+          </h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="category" className="block text-sm font-bold text-white/90 mb-2">
+                Categoría de Comida
+              </label>
+              <select
+                id="category"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-4 py-3 glass-dark rounded-xl text-white focus-ring border-0 bg-black/30 font-medium"
+              >
+                <option value="" className="bg-gray-800 text-white">Cualquier categoría</option>
+                {categories.map((category) => (
+                  <option key={category} value={category} className="bg-gray-800 text-white">
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="district" className="block text-sm font-bold text-white/90 mb-2">
+                Distrito
+              </label>
+              <select
+                id="district"
+                value={selectedDistrict}
+                onChange={(e) => setSelectedDistrict(e.target.value)}
+                className="w-full px-4 py-3 glass-dark rounded-xl text-white focus-ring border-0 bg-black/30 font-medium"
+              >
+                <option value="" className="bg-gray-800 text-white">Cualquier distrito</option>
+                {districts.map((district) => (
+                  <option key={district} value={district} className="bg-gray-800 text-white">
+                    {district}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="glass-dark rounded-2xl p-6 space-y-6">
+          <h3 className="text-lg font-semibold text-white flex items-center gap-3 mb-4">
+            <div className="w-5 h-5 bg-red-600 rounded flex items-center justify-center">
+              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+              </svg>
+            </div>
+            <span>Filtros Avanzados</span>
+          </h3>
+          
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-bold text-white/90 mb-3">
+                Rating mínimo: {minRating > 0 ? (
+                  <span className="text-accent-400 font-bold">{minRating.toFixed(1)} ⭐</span>
+                ) : (
+                  <span className="text-white/60">Sin filtro</span>
+                )}
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="5"
+                step="0.5"
+                value={minRating}
+                onChange={(e) => setMinRating(parseFloat(e.target.value))}
+                className="w-full h-3 bg-white/20 rounded-full appearance-none cursor-pointer slider"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-white/90 mb-3">
+                Distancia máxima: <span className="text-secondary-400 font-bold">{maxDistance} km</span>
+              </label>
+              <input
+                type="range"
+                min="1"
+                max="20"
+                step="1"
+                value={maxDistance}
+                onChange={(e) => setMaxDistance(parseInt(e.target.value))}
+                className="w-full h-3 bg-white/20 rounded-full appearance-none cursor-pointer slider"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="topN" className="block text-sm font-bold text-white/90 mb-2">
+                Número de resultados
+              </label>
+              <select
+                id="topN"
+                value={topN}
+                onChange={(e) => setTopN(parseInt(e.target.value))}
+                className="w-full px-4 py-3 glass-dark rounded-xl text-white focus-ring border-0 bg-black/30 font-medium"
+              >
+                <option value={5} className="bg-gray-800 text-white">5 resultados</option>
+                <option value={10} className="bg-gray-800 text-white">10 resultados</option>
+                <option value={15} className="bg-gray-800 text-white">15 resultados</option>
+                <option value={20} className="bg-gray-800 text-white">20 resultados</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Search Button */}
+      <div className="mt-8 flex justify-center">
+        <button
+          onClick={handleSearch}
+          disabled={loading}
+          className="bg-gradient-to-r from-accent-600 via-secondary-600 to-primary-600 text-white px-12 py-4 rounded-2xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-bold text-xl relative overflow-hidden group transform hover:scale-105"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-600 via-accent-600 to-secondary-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <span className="relative z-10">
+            {loading ? (
+              <span className="flex items-center gap-3">
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                Procesando...
+              </span>
+            ) : (
+              'Generar Recomendaciones'
+            )}
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+});

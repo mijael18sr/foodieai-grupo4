@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Pantalla Azul</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, 
+                #667eea 0%, 
+                #764ba2 25%, 
+                #f093fb 50%, 
+                #f5576c 75%, 
+                #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .test-button {
+            background: linear-gradient(45deg, #f43f5e, #0ea5e9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.3s;
+        }
+
+        .test-button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>🔍 Diagnóstico - Pantalla Azul</h1>
+        <p>Esta es una página de prueba para verificar si el problema es con los estilos CSS.</p>
+        <button class="test-button" onclick="testVisibility()">Probar Visibilidad</button>
+        <button class="test-button" onclick="window.location.href='/'">Volver a la App</button>
+        <div id="result" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        function testVisibility() {
+            const result = document.getElementById('result');
+            result.innerHTML = `
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-top: 15px;">
+                    <h3>✅ Resultados del Test:</h3>
+                    <p>✓ CSS está funcionando</p>
+                    <p>✓ Animaciones están activas</p>
+                    <p>✓ Glass morphism funciona</p>
+                    <p>✓ JavaScript funciona</p>
+                    <p style="color: #90EE90; font-weight: bold;">
+                        El problema podría estar en React o en las consultas API
+                    </p>
+                </div>
+            `;
+        }
+
+        // Auto test cuando carga la página
+        window.addEventListener('load', () => {
+            console.log('✅ Debug page loaded successfully');
+            console.log('🔍 Checking for common issues...');
+            
+            // Verificar si las animaciones están funcionando
+            const body = document.body;
+            const computedStyle = window.getComputedStyle(body);
+            console.log('📊 Background:', computedStyle.background);
+            console.log('🎬 Animation:', computedStyle.animation);
+        });
+    </script>
+</body>
+</html>

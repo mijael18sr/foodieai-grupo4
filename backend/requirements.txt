@@ -1,0 +1,35 @@
+# Core
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic>=2.6.0
+pydantic-settings>=2.2.0
+python-dotenv==1.0.0
+
+# ML & Data - Versiones recientes con wheels binarios
+numpy
+pandas
+scikit-learn
+joblib
+scipy
+
+# NLP - Para análisis de sentimientos
+nltk>=3.8
+wordcloud
+
+# Visualization
+matplotlib
+seaborn
+
+# Testing
+pytest
+pytest-cov
+pytest-asyncio
+httpx
+
+# Monitoring
+prometheus-client
+python-json-logger
+
+# Utils
+python-multipart
+aiofiles
