@@ -197,13 +197,16 @@ Desktop.ini
 mlruns/
 .wandb/
 
-# Archivos de datos grandes (mantener solo los esenciales)
-# NO ignorar estos archivos críticos del proyecto:
-# !backend/data/raw/Lima_Restaurants_2025_08_13_clean.csv
-# !backend/data/models/sentiment_model.pkl
-# !backend/data/models/clustering_model.pkl
-# !backend/data/models/rating_predictor.pkl
-# !backend/data/models/recommender_system.pkl
+# Archivos de datos grandes que exceden el límite de GitHub (100MB)
+# Estos archivos deben descargarse por separado o regenerarse localmente
+backend/data/raw/Lima_Restaurants_2025_08_13.csv
+backend/data/raw/Lima_Restaurants_2025_08_13_clean.csv
+backend/data/processed/reviews_con_sentimiento.csv
+backend/data/processed/modelo_limpio.csv
+
+# Mantener solo archivos esenciales más pequeños
+# !backend/data/raw/restaurant_metadata.csv (< 1MB)
+# !backend/data/models/*.pkl (todos < 10MB)
 
 # Ignorar backups y archivos temporales de datos
 backend/data/processed/*.backup
