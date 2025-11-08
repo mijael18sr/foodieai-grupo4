@@ -4,7 +4,6 @@ Servicio de lógica de negocio para análisis de sentimientos.
 """
 
 from typing import List, Dict, Any, Optional
-import pandas as pd
 
 from src.domain.entities import Review, Sentiment
 from src.domain.repositories import ReviewRepository
@@ -141,9 +140,9 @@ class SentimentAnalysisService:
                 sentiment_key = review.sentiment.value
                 sentiments[sentiment_key] = sentiments.get(sentiment_key, 0) + 1
 
-                if review.sentiment_confidence:
-                    total_confidence += review.sentiment_confidence
-                    count_with_sentiment += 1
+            if review.sentiment_confidence:
+                total_confidence += review.sentiment_confidence
+                count_with_sentiment += 1
 
         avg_confidence = total_confidence / count_with_sentiment if count_with_sentiment > 0 else 0.0
 
@@ -157,7 +156,7 @@ class SentimentAnalysisService:
             'sentiments': sentiments,
             'sentiment_percentages': sentiment_percentages,
             'avg_confidence': round(avg_confidence, 4),
-            'reviews_analyzed': analyzed_reviews[:20]  # Primeras 20 para no sobrecargar
+            'reviews_analyzed': analyzed_reviews[:20]
         }
 
     def get_sentiment_statistics(self, restaurant_id: str) -> Dict[str, Any]:

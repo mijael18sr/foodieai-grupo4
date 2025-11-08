@@ -8,6 +8,9 @@ export { Layout } from './Layout';
 export { AIChat } from './AIChat';
 export { Footer } from './Footer';
 export { ErrorBoundary } from './ErrorBoundary';
+export { Dashboard } from './Dashboard';
+export { DistrictSelector } from './DistrictSelector';
+export { Explore } from './Explore';
 
 // Icon exports - centralized icon system
 export * from './Icons';

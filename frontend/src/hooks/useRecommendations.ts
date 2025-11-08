@@ -31,27 +31,16 @@ export function useRecommendations(options: UseRecommendationsOptions = {}): Use
   const clearError = () => setError(null);
 
   const fetchRecommendations = async (request: RecommendationRequest) => {
-    console.log('🚀 fetchRecommendations started with request:', request);
     setLoading(true);
     setError(null);
     
     try {
-      console.log('📡 Calling API...');
       const response = await RestaurantApiService.getRecommendations(request);
-      console.log('✅ API Response received:', response);
       setRecommendations(response);
-      console.log('📊 Recommendations set in state');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error getting recommendations';
-      console.error('❌ Error fetching recommendations:', err);
-      console.error('🔍 Error details:', {
-        message: errorMessage,
-        stack: err instanceof Error ? err.stack : 'No stack trace',
-        request: request
-      });
       setError(errorMessage);
     } finally {
-      console.log('🏁 fetchRecommendations finished, loading set to false');
       setLoading(false);
     }
   };
@@ -80,7 +69,6 @@ export function useRecommendations(options: UseRecommendationsOptions = {}): Use
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error getting recommendations';
       setError(errorMessage);
-      console.error('Error fetching recommendations:', err);
     } finally {
       setLoading(false);
     }

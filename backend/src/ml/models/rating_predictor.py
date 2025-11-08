@@ -16,10 +16,10 @@ class RatingPredictorModel(BaseMLModel):
     """Modelo de prediccion de ratings usando Random Forest."""
 
     def __init__(
-            self,
-            n_estimators: int = 100,
-            max_depth: Optional[int] = 10,
-            random_state: int = 42
+        self,
+        n_estimators: int = 100,
+        max_depth: Optional[int] = 10,
+        random_state: int = 42
     ):
         super().__init__(model_name="rating_predictor")
         self.n_estimators = n_estimators
@@ -28,13 +28,13 @@ class RatingPredictorModel(BaseMLModel):
         self.feature_names = []
 
     def train(
-            self,
-            X: pd.DataFrame,
-            y: pd.Series
+        self,
+        X: pd.DataFrame,
+        y: pd.Series
     ) -> 'RatingPredictorModel':
         print(f"Entrenando {self.model_name}...")
-        print(f"   Datos: {X.shape[0]} registros, {X.shape[1]} features")
-        print(f"   Target: ratings de {y.min():.1f} a {y.max():.1f}")
+        print(f" Datos: {X.shape[0]} registros, {X.shape[1]} features")
+        print(f" Target: ratings de {y.min():.1f} a {y.max():.1f}")
 
         self.feature_names = list(X.columns)
 
@@ -88,13 +88,13 @@ class RatingPredictorModel(BaseMLModel):
         self.is_trained = True
 
         print(f"Modelo entrenado exitosamente")
-        print(f"   RMSE (train): {rmse:.3f}")
-        print(f"   MAE (train): {mae:.3f}")
-        print(f"   R2 (train): {r2:.3f}")
-        print(f"   RMSE (CV): {cv_rmse:.3f}")
-        print(f"\n   Top 3 Features:")
+        print(f" RMSE (train): {rmse:.3f}")
+        print(f" MAE (train): {mae:.3f}")
+        print(f" R2 (train): {r2:.3f}")
+        print(f" RMSE (CV): {cv_rmse:.3f}")
+        print(f"\n Top 3 Features:")
         for feat, importance in list(feature_importance.items())[:3]:
-            print(f"      {feat}: {importance:.3f}")
+            print(f" {feat}: {importance:.3f}")
 
         return self
 

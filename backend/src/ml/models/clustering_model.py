@@ -24,8 +24,8 @@ class RestaurantClusteringModel(BaseMLModel):
 
     def train(self, X: pd.DataFrame, y=None) -> 'RestaurantClusteringModel':
         print(f"Entrenando {self.model_name}...")
-        print(f"   Datos: {X.shape[0]} registros, {X.shape[1]} features")
-        print(f"   Clusters objetivo: {self.n_clusters}")
+        print(f" Datos: {X.shape[0]} registros, {X.shape[1]} features")
+        print(f" Clusters objetivo: {self.n_clusters}")
 
         self.feature_names = list(X.columns)
         X_scaled = self.scaler.fit_transform(X)
@@ -59,9 +59,9 @@ class RestaurantClusteringModel(BaseMLModel):
         self.is_trained = True
 
         print(f"Modelo entrenado exitosamente")
-        print(f"   Silhouette Score: {silhouette:.3f}")
-        print(f"   Inertia: {inertia:.2f}")
-        print(f"   Tamanos de clusters: {self.metadata['cluster_sizes']}")
+        print(f" Silhouette Score: {silhouette:.3f}")
+        print(f" Inertia: {inertia:.2f}")
+        print(f" Tamanos de clusters: {self.metadata['cluster_sizes']}")
 
         return self
 

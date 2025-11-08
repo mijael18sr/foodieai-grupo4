@@ -20,9 +20,9 @@ class ModelTrainer:
     """Pipeline de entrenamiento de modelos ML."""
 
     def __init__(
-            self,
-            data_path: str = 'data/processed/restaurantes_sin_anomalias.csv',
-            models_dir: str = 'data/models'
+        self,
+        data_path: str = 'data/processed/restaurantes_sin_anomalias.csv',
+        models_dir: str = 'data/models'
     ):
         self.data_path = Path(data_path)
         self.models_dir = Path(models_dir)
@@ -46,7 +46,7 @@ class ModelTrainer:
 
         self.df = pd.read_csv(self.data_path)
         print(f"Datos cargados: {len(self.df)} registros")
-        print(f"   Columnas: {list(self.df.columns)}")
+        print(f" Columnas: {list(self.df.columns)}")
         print()
 
         return self.df
@@ -71,9 +71,9 @@ class ModelTrainer:
         }
 
     def train_clustering_model(
-            self,
-            features: pd.DataFrame,
-            n_clusters: int = 6
+        self,
+        features: pd.DataFrame,
+        n_clusters: int = 6
     ) -> RestaurantClusteringModel:
         print("\n" + "=" * 70)
         print("ENTRENANDO CLUSTERING MODEL")
@@ -89,9 +89,9 @@ class ModelTrainer:
         return model
 
     def train_rating_model(
-            self,
-            features: pd.DataFrame,
-            target: pd.Series
+        self,
+        features: pd.DataFrame,
+        target: pd.Series
     ) -> RatingPredictorModel:
         print("\n" + "=" * 70)
         print("ENTRENANDO RATING PREDICTOR")

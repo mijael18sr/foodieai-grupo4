@@ -316,7 +316,7 @@ async def get_model_metrics():
             total_support = sum(metrics.get('support', 0) for metrics in per_class_data.values())
             if total_support > 0:
                 precision_weighted = sum(
-                    metrics.get('precision', 0.0) * metrics.get('support', 0) 
+                    metrics.get('precision', 0.0) * metrics.get('support', 0)
                     for metrics in per_class_data.values()
                 ) / total_support
 
@@ -324,7 +324,7 @@ async def get_model_metrics():
             total_support = sum(metrics.get('support', 0) for metrics in per_class_data.values())
             if total_support > 0:
                 recall_weighted = sum(
-                    metrics.get('recall', 0.0) * metrics.get('support', 0) 
+                    metrics.get('recall', 0.0) * metrics.get('support', 0)
                     for metrics in per_class_data.values()
                 ) / total_support
 

@@ -52,7 +52,7 @@ export const Footer = memo(function Footer({
         break;
       case 'feedback':
         // Future: Open feedback modal
-        console.log('Feedback modal - Coming soon');
+        // TODO: Implement feedback modal
         break;
       case 'share':
         // Native Web Share API if available

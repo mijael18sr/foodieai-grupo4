@@ -5,10 +5,13 @@ Punto de entrada de la aplicación REST API.
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 # Importar routers
 from src.presentation.api.routes import recommendations, health, sentiment
+from src.presentation.api.district_router import router as district_router
 
 # Metadata de la API
 API_TITLE = "Restaurant Recommender API"
@@ -21,7 +24,7 @@ Sistema de recomendación de restaurantes en Lima usando Machine Learning.
 
 * Recomendaciones personalizadas basadas en ubicación y preferencias
 * Predicción de ratings con Random Forest
-* **Análisis de sentimientos con Redes Bayesianas** 🆕
+* **Análisis de sentimientos con Redes Bayesianas**
 * Búsqueda geográfica de restaurantes cercanos
 * Analytics y estadísticas del sistema
 
@@ -57,7 +60,7 @@ async def lifespan(app: FastAPI):
 
     # Aquí puedes cargar modelos ML, conectar a DB, etc.
     from src.infrastructure import container
-    _ = container  # Initialize container
+    _ = container
     print("Dependency Container initialized")
     print(f"API Version: {API_VERSION}")
 
@@ -76,14 +79,14 @@ app = FastAPI(
     version=API_VERSION,
     contact=API_CONTACT,
     lifespan=lifespan,
-    docs_url="/docs",  # Swagger UI
-    redoc_url="/redoc",  # ReDoc
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
 # CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción: especificar dominios
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -116,6 +119,24 @@ async def root():
 app.include_router(health.router, prefix="/api/v1", tags=["Health"])
 app.include_router(recommendations.router, prefix="/api/v1", tags=["Recommendations"])
 app.include_router(sentiment.router, prefix="/api/v1", tags=["Sentiment Analysis"])
+app.include_router(district_router, tags=["Districts"])
+
+
+# =========================================================================
+# ARCHIVOS ESTÁTICOS (para servir imágenes y figuras)
+# =========================================================================
+
+# Obtener rutas absolutas
+backend_root = Path(__file__).parent.parent.parent.parent # backend/
+docs_path = backend_root / "docs"
+figures_path = docs_path / "figures"
+
+# Servir archivos estáticos para imágenes
+if figures_path.exists():
+    app.mount("/docs", StaticFiles(directory=str(docs_path)), name="docs")
+    print(f" Serving static files from: {docs_path}")
+else:
+    print(f" Warning: docs directory not found at {docs_path}")
 
 
 # =========================================================================

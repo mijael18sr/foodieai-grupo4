@@ -123,7 +123,7 @@ class SentimentAnalysisModel(BaseMLModel):
         # 1. Preprocesar textos
         print("\n[1/4] Preprocesando textos...")
         X_processed = X.apply(self.preprocess_text)
-        print(f"      ✓ {len(X_processed)} comentarios preprocesados")
+        print(f" {len(X_processed)} comentarios preprocesados")
 
         # 2. Vectorización TF-IDF
         print("\n[2/4] Vectorización TF-IDF...")
@@ -135,14 +135,14 @@ class SentimentAnalysisModel(BaseMLModel):
             sublinear_tf=True
         )
         X_tfidf = self.vectorizer.fit_transform(X_processed)
-        print(f"      ✓ Vocabulario: {len(self.vectorizer.vocabulary_):,} términos")
-        print(f"      ✓ Matriz: {X_tfidf.shape}")
+        print(f" Vocabulario: {len(self.vectorizer.vocabulary_):,} términos")
+        print(f" Matriz: {X_tfidf.shape}")
 
         # 3. Entrenar clasificador
         print("\n[3/4] Entrenando Complement Naive Bayes...")
         self.classifier = ComplementNB(alpha=alpha)
         self.classifier.fit(X_tfidf, y)
-        print(f"      ✓ Modelo entrenado")
+        print(f" Modelo entrenado")
 
         # 4. Guardar metadata
         self.is_trained = True
@@ -157,7 +157,7 @@ class SentimentAnalysisModel(BaseMLModel):
         }
 
         print("\n[4/4] Entrenamiento completado")
-        print(f"      ✓ Clases: {list(self.classifier.classes_)}")
+        print(f" Clases: {list(self.classifier.classes_)}")
         print(f"{'='*80}\n")
 
         return self
@@ -211,7 +211,7 @@ class SentimentAnalysisModel(BaseMLModel):
 
         return {
             'text_original': text,
-            'text_processed': text.lower(),  # Solo lowercase para mostrar
+            'text_processed': text.lower(),
             'sentiment': sentiment,
             'confidence': float(max(probabilities)),
             'probabilities': {k: float(v) for k, v in prob_dict.items()}
@@ -336,11 +336,11 @@ class SentimentAnalysisModel(BaseMLModel):
             'evaluation_date': datetime.now().isoformat()
         }
 
-        print(f"\n✓ Métricas de evaluación actualizadas:")
-        print(f"  • Accuracy: {accuracy:.4f}")
-        print(f"  • F1-Score (macro): {f1_macro:.4f}")
-        print(f"  • Cohen's Kappa: {cohen_kappa:.4f}")
-        print(f"  • Matthews Correlation: {matthews_corr:.4f}")
+        print(f"\n Métricas de evaluación actualizadas:")
+        print(f" • Accuracy: {accuracy:.4f}")
+        print(f" • F1-Score (macro): {f1_macro:.4f}")
+        print(f" • Cohen's Kappa: {cohen_kappa:.4f}")
+        print(f" • Matthews Correlation: {matthews_corr:.4f}")
 
     def get_top_features(self, n: int = 20, sentiment: Optional[str] = None) -> Dict[str, List[tuple]]:
         """
@@ -400,7 +400,7 @@ class SentimentAnalysisModel(BaseMLModel):
         }
 
         joblib.dump(model_data, model_path)
-        print(f"✓ Modelo guardado: {model_path}")
+        print(f" Modelo guardado: {model_path}")
 
     def load(self, path: str) -> 'SentimentAnalysisModel':
         """
@@ -427,9 +427,9 @@ class SentimentAnalysisModel(BaseMLModel):
         self.model_name = model_data['model_name']
         self.stopwords_custom = model_data.get('stopwords_custom', self.stopwords_custom)
 
-        print(f"✓ Modelo cargado: {model_path}")
-        print(f"  Vocabulario: {len(self.vectorizer.vocabulary_):,} términos")
-        print(f"  Clases: {list(self.classifier.classes_)}")
+        print(f" Modelo cargado: {model_path}")
+        print(f" Vocabulario: {len(self.vectorizer.vocabulary_):,} términos")
+        print(f" Clases: {list(self.classifier.classes_)}")
 
         return self
 

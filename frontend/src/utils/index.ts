@@ -2,7 +2,7 @@
  * Utility functions for the Restaurant Recommender application
  */
 
-import { LOCATION_CONFIG } from '../constants/config';
+import { LOCATION_CONFIG, API_CONFIG } from '../constants/config';
 
 // Type definitions
 export interface Coordinates {
@@ -71,8 +71,7 @@ export function getCurrentLocation(): Promise<Coordinates> {
           long: position.coords.longitude,
         });
       },
-      (error) => {
-        console.warn('Error getting location:', error);
+      () => {
         // Fallback to default Lima location
         resolve(LOCATION_CONFIG.DEFAULT_LOCATION);
       },
@@ -134,24 +133,24 @@ export const storage = {
   set<T>(key: string, value: T): void {
     try {
       localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-      console.warn('Failed to save to localStorage:', error);
+    } catch {
+      // Silently handle localStorage errors
     }
   },
 
   remove(key: string): void {
     try {
       localStorage.removeItem(key);
-    } catch (error) {
-      console.warn('Failed to remove from localStorage:', error);
+    } catch {
+      // Silently handle localStorage errors
     }
   },
 
   clear(): void {
     try {
       localStorage.clear();
-    } catch (error) {
-      console.warn('Failed to clear localStorage:', error);
+    } catch {
+      // Silently handle localStorage errors
     }
   },
 };
@@ -202,4 +201,28 @@ export function isInViewport(element: HTMLElement): boolean {
     rect.bottom <= (globalThis.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (globalThis.innerWidth || document.documentElement.clientWidth)
   );
+}
+
+/**
+ * Get the full URL for ML model images
+ * @param imageName - Name of the image file (e.g., 'confusion_matrix_test_set.png')
+ * @returns Full URL to the image
+ */
+export function getImageUrl(imageName: string): string {
+  return `${API_CONFIG.IMAGES_BASE_URL}/${imageName}`;
+}
+
+/**
+ * Check if backend server is running
+ * @returns Promise<boolean> - True if server is accessible
+ */
+export async function checkBackendHealth(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/api/v1/health/status`, {
+      method: 'GET',
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
 }

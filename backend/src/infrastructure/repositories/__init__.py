@@ -8,7 +8,7 @@ from .memory_user_repository import MemoryUserRepository
 from .csv_review_repository import CSVReviewRepository
 
 __all__ = [
-    'CSVRestaurantRepository',
-    'MemoryUserRepository',
-    'CSVReviewRepository',
+ 'CSVRestaurantRepository',
+ 'MemoryUserRepository',
+ 'CSVReviewRepository',
 ]

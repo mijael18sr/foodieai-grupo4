@@ -38,13 +38,13 @@ def interpretar_confianza(sentiment, confidence):
     if confidence >= 0.90:
         status = "MUY CONFIABLE"
         color = "green"
-        icon = "✓✓"
+        icon = ""
         mostrar = True
         accion = "Mostrar con alta confianza"
     elif confidence >= 0.80:
         status = "CONFIABLE"
         color = "lightgreen"
-        icon = "✓"
+        icon = ""
         mostrar = True
         accion = "Mostrar normalmente"
     elif confidence >= 0.70:
@@ -81,19 +81,19 @@ def interpretar_confianza(sentiment, confidence):
 def optimizar_modelo_satisfaccion_gastronomica():
     """Optimizar modelo para análisis de satisfacción en restaurantes"""
 
-    print("🍽️ OPTIMIZACIÓN DEL MODELO DE SATISFACCIÓN GASTRONÓMICA")
+    print(" OPTIMIZACIÓN DEL MODELO DE SATISFACCIÓN GASTRONÓMICA")
     print("=" * 80)
 
-    print("🎯 CONTEXTO DEL NEGOCIO:")
-    print("   • Recomendador de restaurantes en Lima")
-    print("   • 706 restaurantes de alta calidad")
-    print("   • 378,969 reviews de satisfacción de clientes")
-    print("   • Análisis: comida + servicio + ambiente")
+    print(" CONTEXTO DEL NEGOCIO:")
+    print(" • Recomendador de restaurantes en Lima")
+    print(" • 706 restaurantes de alta calidad")
+    print(" • 378,969 reviews de satisfacción de clientes")
+    print(" • Análisis: comida + servicio + ambiente")
     print()
 
-    print("❌ PROBLEMA IDENTIFICADO:")
-    print('   "se atienden todos los domingos" → POSITIVO (51.6%)')
-    print("   ↳ NO es satisfacción, es INFORMACIÓN de servicio")
+    print(" PROBLEMA IDENTIFICADO:")
+    print(' "se atienden todos los domingos" → POSITIVO (51.6%)')
+    print(" ↳ NO es satisfacción, es INFORMACIÓN de servicio")
     print()
 
     try:
@@ -103,10 +103,10 @@ def optimizar_modelo_satisfaccion_gastronomica():
         model = SentimentAnalysisModel()
         model.load('data/models/sentiment_model.pkl')
 
-        print("✅ Modelo actual cargado")
+        print(" Modelo actual cargado")
 
         # Definir categorías específicas del dominio gastronómico
-        print("\n🔍 ANÁLISIS DEL DOMINIO GASTRONÓMICO:")
+        print("\n ANÁLISIS DEL DOMINIO GASTRONÓMICO:")
         print("-" * 50)
 
         # COMENTARIOS DE SATISFACCIÓN (lo que SÍ queremos clasificar)
@@ -447,17 +447,17 @@ def optimizar_modelo_satisfaccion_gastronomica():
         for categoria, palabras in palabras_no_relacionadas.items():
             todas_palabras_no_relacionadas.extend(palabras)
 
-        print(f"📝 PALABRAS NO RELACIONADAS CON CALIFICACIÓN:")
-        print(f"   • Total identificadas: {len(todas_palabras_no_relacionadas)}")
-        print(f"   • Estrategia: Clasificar como NEUTRO")
-        print(f"   • Razón: No expresan satisfacción gastronómica")
+        print(f" PALABRAS NO RELACIONADAS CON CALIFICACIÓN:")
+        print(f" • Total identificadas: {len(todas_palabras_no_relacionadas)}")
+        print(f" • Estrategia: Clasificar como NEUTRO")
+        print(f" • Razón: No expresan satisfacción gastronómica")
         print()
 
         # Probar casos problemáticos del dominio gastronómico
-        print("\n🧪 ANÁLISIS DE CASOS PROBLEMÁTICOS:")
+        print("\n ANÁLISIS DE CASOS PROBLEMÁTICOS:")
         print("-" * 50)
 
-        casos_informativos = informacion_promocional_comercial[:10]  # Primeros 10 casos
+        casos_informativos = informacion_promocional_comercial[:10] # Primeros 10 casos
         problematicos = []
 
         for i, caso in enumerate(casos_informativos, 1):
@@ -471,42 +471,42 @@ def optimizar_modelo_satisfaccion_gastronomica():
             if es_problematico:
                 problematicos.append(caso)
 
-            estado = "⚠️ PROBLEMÁTICO" if es_problematico else "✅ OK"
+            estado = " PROBLEMÁTICO" if es_problematico else " OK"
             print(f'{i:2d}. {estado}')
-            print(f'    "{caso}"')
-            print(f'    → {sentiment.upper()} ({confidence:.3f})')
+            print(f' "{caso}"')
+            print(f' → {sentiment.upper()} ({confidence:.3f})')
             print()
 
-        print(f"📊 CASOS PROBLEMÁTICOS: {len(problematicos)}/{len(casos_informativos)}")
+        print(f" CASOS PROBLEMÁTICOS: {len(problematicos)}/{len(casos_informativos)}")
 
-        if len(problematicos) >= 3:  # Si hay varios casos problemáticos
-            print(f"\n🔧 CREANDO OPTIMIZACIÓN ESPECÍFICA PARA RESTAURANTES...")
+        if len(problematicos) >= 3: # Si hay varios casos problemáticos
+            print(f"\n CREANDO OPTIMIZACIÓN ESPECÍFICA PARA RESTAURANTES...")
 
             # Cargar dataset original
             data_path = project_root / "data" / "processed" / "modelo_limpio.csv"
-            print(f"📁 Cargando dataset: {data_path}")
+            print(f" Cargando dataset: {data_path}")
 
             df_original = pd.read_csv(data_path)
-            print(f"✅ Dataset cargado: {len(df_original):,} reviews")
+            print(f" Dataset cargado: {len(df_original):,} reviews")
 
             # Analizar distribución actual
-            print(f"\n📊 DISTRIBUCIÓN ACTUAL:")
+            print(f"\n DISTRIBUCIÓN ACTUAL:")
             dist_actual = df_original['sentimiento'].value_counts()
             for sent, count in dist_actual.items():
                 pct = (count / len(df_original)) * 100
-                print(f"   • {sent:10s}: {count:8,} ({pct:5.1f}%)")
+                print(f" • {sent:10s}: {count:8,} ({pct:5.1f}%)")
 
             # Crear dataset de entrenamiento optimizado
-            print(f"\n🎯 CREANDO DATASET OPTIMIZADO...")
+            print(f"\n CREANDO DATASET OPTIMIZADO...")
 
             # 1. Tomar muestra más grande y balanceada del dataset original
-            sample_size = 25000  # Muestra más grande para mejor entrenamiento
+            sample_size = 25000 # Muestra más grande para mejor entrenamiento
 
             # Balancear la muestra por sentimiento para mejor representación
             try:
                 # Intentar muestra estratificada balanceada
                 min_class_size = df_original['sentimiento'].value_counts().min()
-                samples_per_class = min(8000, min_class_size)  # Máximo 8000 por clase
+                samples_per_class = min(8000, min_class_size) # Máximo 8000 por clase
 
                 df_sample_list = []
                 for sentiment in ['positivo', 'neutro', 'negativo']:
@@ -517,29 +517,29 @@ def optimizar_modelo_satisfaccion_gastronomica():
 
                 if df_sample_list:
                     df_sample = pd.concat(df_sample_list, ignore_index=True)
-                    print(f"   ✅ Muestra balanceada: {len(df_sample):,} registros")
+                    print(f" Muestra balanceada: {len(df_sample):,} registros")
                 else:
                     df_sample = df_original.sample(n=sample_size, random_state=42)
-                    print(f"   ⚠️ Muestra aleatoria: {len(df_sample):,} registros")
+                    print(f" Muestra aleatoria: {len(df_sample):,} registros")
             except:
                 df_sample = df_original.sample(n=sample_size, random_state=42)
-                print(f"   ⚠️ Muestra aleatoria: {len(df_sample):,} registros")
+                print(f" Muestra aleatoria: {len(df_sample):,} registros")
 
             # 2. Agregar casos específicos de información promocional/comercial como NEUTRO (triplicado para mayor peso)
             df_promocional = pd.DataFrame({
-                'comment': informacion_promocional_comercial * 3,  # Triplicar para mayor peso en el entrenamiento
+                'comment': informacion_promocional_comercial * 3, # Triplicar para mayor peso en el entrenamiento
                 'sentimiento': ['neutro'] * (len(informacion_promocional_comercial) * 3),
-                'rating': [3] * (len(informacion_promocional_comercial) * 3)  # Rating neutro
+                'rating': [3] * (len(informacion_promocional_comercial) * 3) # Rating neutro
             })
 
             # 2.5. Agregar palabras NO relacionadas con calificación como NEUTRO (triplicado)
             df_no_relacionadas = pd.DataFrame({
-                'comment': todas_palabras_no_relacionadas * 3,  # Triplicar para mayor peso
+                'comment': todas_palabras_no_relacionadas * 3, # Triplicar para mayor peso
                 'sentimiento': ['neutro'] * (len(todas_palabras_no_relacionadas) * 3),
                 'rating': [3] * (len(todas_palabras_no_relacionadas) * 3)
             })
 
-            print(f"   ✅ Agregadas {len(todas_palabras_no_relacionadas) * 3} palabras NO relacionadas → NEUTRO (triplicadas)")
+            print(f" Agregadas {len(todas_palabras_no_relacionadas) * 3} palabras NO relacionadas → NEUTRO (triplicadas)")
 
             # 2.7. Agregar ejemplos específicos de confusión para entrenar mejor
             ejemplos_confusion = [
@@ -556,9 +556,9 @@ def optimizar_modelo_satisfaccion_gastronomica():
                 ("wifi gratuito", "neutro"),
 
                 # SATISFACCIÓN GASTRONÓMICA POSITIVA CLARA → POSITIVO
-                ("la comida estuvo deliciosa me encantó", "positivo"),  # Caso específico que falla
+                ("la comida estuvo deliciosa me encantó", "positivo"), # Caso específico que falla
                 ("excelente servicio me trataron súper bien", "positivo"),
-                ("sabor increíble lo recomiendo totalmente", "positivo"),  # Caso específico que falla
+                ("sabor increíble lo recomiendo totalmente", "positivo"), # Caso específico que falla
                 ("platos deliciosos con sabor espectacular", "positivo"),
                 ("comida exquisita muy rica todo", "positivo"),
                 ("atención fantástica me gustó mucho", "positivo"),
@@ -570,7 +570,7 @@ def optimizar_modelo_satisfaccion_gastronomica():
                 ("ají de gallina cremoso y rico", "positivo"),
 
                 # SATISFACCIÓN GASTRONÓMICA NEGATIVA CLARA → NEGATIVO
-                ("pésimo servicio me trataron muy mal", "negativo"),  # Caso específico que falla
+                ("pésimo servicio me trataron muy mal", "negativo"), # Caso específico que falla
                 ("comida horrible sin sabor terrible", "negativo"),
                 ("servicio lento me hicieron esperar mucho", "negativo"),
                 ("platos fríos y desabridos pésimos", "negativo"),
@@ -595,7 +595,7 @@ def optimizar_modelo_satisfaccion_gastronomica():
             ]
 
             df_confusion = pd.DataFrame({
-                'comment': [ej[0] for ej in ejemplos_confusion] * 8,  # Aumentado a 8 para mayor peso
+                'comment': [ej[0] for ej in ejemplos_confusion] * 8, # Aumentado a 8 para mayor peso
                 'sentimiento': [ej[1] for ej in ejemplos_confusion] * 8,
                 'rating': [5 if ej[1] == 'positivo' else 1 if ej[1] == 'negativo' else 3 for ej in ejemplos_confusion] * 8
             })
@@ -614,7 +614,7 @@ def optimizar_modelo_satisfaccion_gastronomica():
                     elif sentiment == 'negativos':
                         sentimientos_gastronomicos.append('negativo')
                         ratings_gastronomicos.append(1)
-                    else:  # neutros
+                    else: # neutros
                         sentimientos_gastronomicos.append('neutro')
                         ratings_gastronomicos.append(3)
 
@@ -627,21 +627,21 @@ def optimizar_modelo_satisfaccion_gastronomica():
             # 4. Combinar datasets (incluye ejemplos específicos de confusión)
             df_optimizado = pd.concat([
                 df_sample,
-                df_promocional,      # Información promocional/comercial (triplicadas)
-                df_no_relacionadas,  # Palabras no relacionadas (triplicadas)
-                df_confusion,        # Ejemplos específicos de confusión (x8)
+                df_promocional, # Información promocional/comercial (triplicadas)
+                df_no_relacionadas, # Palabras no relacionadas (triplicadas)
+                df_confusion, # Ejemplos específicos de confusión (x8)
                 df_gastronomicos
             ], ignore_index=True)
             df_optimizado = df_optimizado.sample(frac=1, random_state=42).reset_index(drop=True)
 
-            print(f"✅ Dataset optimizado creado: {len(df_optimizado):,} registros")
-            print(f"   • Información promocional/comercial: {len(informacion_promocional_comercial) * 3} casos → NEUTRO")
-            print(f"   • Palabras NO relacionadas: {len(todas_palabras_no_relacionadas) * 3} casos → NEUTRO")
-            print(f"   • Ejemplos de confusión: {len(ejemplos_confusion) * 8} casos → ENTRENAMIENTO ESPECÍFICO")
-            print(f"   • Opiniones reales de clientes: {len(comentarios_gastronomicos)} casos")
+            print(f" Dataset optimizado creado: {len(df_optimizado):,} registros")
+            print(f" • Información promocional/comercial: {len(informacion_promocional_comercial) * 3} casos → NEUTRO")
+            print(f" • Palabras NO relacionadas: {len(todas_palabras_no_relacionadas) * 3} casos → NEUTRO")
+            print(f" • Ejemplos de confusión: {len(ejemplos_confusion) * 8} casos → ENTRENAMIENTO ESPECÍFICO")
+            print(f" • Opiniones reales de clientes: {len(comentarios_gastronomicos)} casos")
 
             # Entrenar modelo optimizado
-            print(f"\n🚀 ENTRENANDO MODELO OPTIMIZADO...")
+            print(f"\n ENTRENANDO MODELO OPTIMIZADO...")
 
             from sklearn.model_selection import train_test_split
             from sklearn.feature_extraction.text import TfidfVectorizer
@@ -656,31 +656,31 @@ def optimizar_modelo_satisfaccion_gastronomica():
             )
 
             # Vectorización optimizada para el dominio gastronómico
-            print("   🔧 Configurando vectorización TF-IDF optimizada...")
+            print(" Configurando vectorización TF-IDF optimizada...")
             vectorizer_gastro = TfidfVectorizer(
-                max_features=12000,  # Reducido para evitar sobreajuste
-                ngram_range=(1, 2),  # Solo unigramas y bigramas para mayor precisión
-                min_df=2,  # Mínimo 2 documentos para captar más términos específicos
-                max_df=0.85,  # Aumentado para mantener palabras importantes
-                sublinear_tf=True,  # Escalamiento logarítmico
-                stop_words=None,  # No usar stopwords automáticas (mantenemos negaciones)
+                max_features=12000, # Reducido para evitar sobreajuste
+                ngram_range=(1, 2), # Solo unigramas y bigramas para mayor precisión
+                min_df=2, # Mínimo 2 documentos para captar más términos específicos
+                max_df=0.85, # Aumentado para mantener palabras importantes
+                sublinear_tf=True, # Escalamiento logarítmico
+                stop_words=None, # No usar stopwords automáticas (mantenemos negaciones)
                 lowercase=True,
-                strip_accents='unicode',  # Normalizar acentos
-                token_pattern=r'(?u)\b\w\w+\b',  # Al menos 2 caracteres
-                use_idf=True,  # Usar IDF para dar peso a términos distintivos
-                smooth_idf=True,  # Suavizado IDF para evitar división por cero
-                norm='l2'  # Normalización L2 para vectores unitarios
+                strip_accents='unicode', # Normalizar acentos
+                token_pattern=r'(?u)\b\w\w+\b', # Al menos 2 caracteres
+                use_idf=True, # Usar IDF para dar peso a términos distintivos
+                smooth_idf=True, # Suavizado IDF para evitar división por cero
+                norm='l2' # Normalización L2 para vectores unitarios
             )
 
-            print("   ⚙️ Entrenando vectorizador...")
+            print(" ⚙️ Entrenando vectorizador...")
             X_train_tfidf = vectorizer_gastro.fit_transform(X_train)
             X_test_tfidf = vectorizer_gastro.transform(X_test)
 
-            print(f"   ✅ Vocabulario: {len(vectorizer_gastro.vocabulary_):,} términos")
-            print(f"   ✅ Matriz entrenamiento: {X_train_tfidf.shape}")
+            print(f" Vocabulario: {len(vectorizer_gastro.vocabulary_):,} términos")
+            print(f" Matriz entrenamiento: {X_train_tfidf.shape}")
 
             # Probar múltiples clasificadores para encontrar el mejor
-            print("   🤖 Probando múltiples algoritmos...")
+            print(" Probando múltiples algoritmos...")
 
             from sklearn.ensemble import VotingClassifier
             from sklearn.linear_model import LogisticRegression
@@ -688,14 +688,14 @@ def optimizar_modelo_satisfaccion_gastronomica():
 
             # Clasificadores individuales optimizados
             classifiers = {
-                'complement_nb': ComplementNB(alpha=0.1),  # Menor suavizado para más precisión
+                'complement_nb': ComplementNB(alpha=0.1), # Menor suavizado para más precisión
                 'multinomial_nb': MultinomialNB(alpha=0.3),
                 'logistic_reg': LogisticRegression(
                     max_iter=3000,
                     class_weight='balanced',
                     random_state=42,
-                    solver='saga',  # Cambiado a saga para evitar el warning
-                    C=1.0  # Regularización moderada
+                    solver='saga', # Cambiado a saga para evitar el warning
+                    C=1.0 # Regularización moderada
                 )
             }
 
@@ -708,14 +708,14 @@ def optimizar_modelo_satisfaccion_gastronomica():
                 clf.fit(X_train_tfidf, y_train)
                 score = clf.score(X_test_tfidf, y_test)
                 classifier_scores[name] = score
-                print(f"   • {name}: {score:.3f}")
+                print(f" • {name}: {score:.3f}")
 
                 if score > best_score:
                     best_score = score
                     best_classifier = clf
 
             # Usar el mejor clasificador individual o ensemble si es mejor
-            print(f"\n   🏆 Mejor clasificador individual: {best_score:.3f}")
+            print(f"\n Mejor clasificador individual: {best_score:.3f}")
 
             # Crear ensemble con los mejores
             try:
@@ -728,26 +728,26 @@ def optimizar_modelo_satisfaccion_gastronomica():
                 )
                 ensemble.fit(X_train_tfidf, y_train)
                 ensemble_score = ensemble.score(X_test_tfidf, y_test)
-                print(f"   🎯 Ensemble score: {ensemble_score:.3f}")
+                print(f" Ensemble score: {ensemble_score:.3f}")
 
                 if ensemble_score > best_score:
                     classifier_gastro = ensemble
-                    print("   ✅ Usando ensemble (mejor rendimiento)")
+                    print(" Usando ensemble (mejor rendimiento)")
                 else:
                     classifier_gastro = best_classifier
-                    print("   ✅ Usando clasificador individual (mejor rendimiento)")
+                    print(" Usando clasificador individual (mejor rendimiento)")
             except:
                 classifier_gastro = best_classifier
-                print("   ✅ Usando clasificador individual")
+                print(" Usando clasificador individual")
 
             # Evaluar modelo optimizado
             y_pred = classifier_gastro.predict(X_test_tfidf)
             accuracy_gastro = accuracy_score(y_test, y_pred)
             kappa_gastro = cohen_kappa_score(y_test, y_pred)
 
-            print(f"\n📊 RESULTADOS DEL MODELO OPTIMIZADO:")
-            print(f"   • Accuracy: {accuracy_gastro:.1%}")
-            print(f"   • Cohen's Kappa: {kappa_gastro:.4f}")
+            print(f"\n RESULTADOS DEL MODELO OPTIMIZADO:")
+            print(f" • Accuracy: {accuracy_gastro:.1%}")
+            print(f" • Cohen's Kappa: {kappa_gastro:.4f}")
 
             # Crear modelo completo
             modelo_gastro = SentimentAnalysisModel()
@@ -791,7 +791,7 @@ def optimizar_modelo_satisfaccion_gastronomica():
             }
 
             # PRUEBAS ESPECÍFICAS DEL DOMINIO GASTRONÓMICO
-            print(f"\n🧪 PRUEBAS EN EL DOMINIO GASTRONÓMICO:")
+            print(f"\n PRUEBAS EN EL DOMINIO GASTRONÓMICO:")
             print("=" * 60)
 
             casos_dominio = [
@@ -836,105 +836,105 @@ def optimizar_modelo_satisfaccion_gastronomica():
                     correctos_optimizado += 1
 
                 # Determinar mejora
-                mejoro = "✅" if pred_optimizado == esperado and conf_optimizado > 0.6 else "⚠️"
+                mejoro = "" if pred_optimizado == esperado and conf_optimizado > 0.6 else ""
                 if pred_original != esperado and pred_optimizado == esperado:
-                    mejoro = "🎯 CORREGIDO"
+                    mejoro = " CORREGIDO"
 
                 print(f"{i:2d}. {mejoro} \"{caso[:40]}...\"")
-                print(f"    Esperado:    {esperado}")
-                print(f"    Original:    {pred_original} ({conf_original:.3f})")
-                print(f"    Optimizado:  {pred_optimizado} ({conf_optimizado:.3f})")
+                print(f" Esperado: {esperado}")
+                print(f" Original: {pred_original} ({conf_original:.3f})")
+                print(f" Optimizado: {pred_optimizado} ({conf_optimizado:.3f})")
                 print()
 
             accuracy_original_dominio = (correctos_original / len(casos_dominio)) * 100
             accuracy_optimizado_dominio = (correctos_optimizado / len(casos_dominio)) * 100
 
-            print(f"📊 RESULTADOS EN CASOS DE DOMINIO:")
-            print(f"   • Modelo Original:  {correctos_original}/{len(casos_dominio)} ({accuracy_original_dominio:.1f}%)")
-            print(f"   • Modelo Optimizado: {correctos_optimizado}/{len(casos_dominio)} ({accuracy_optimizado_dominio:.1f}%)")
+            print(f" RESULTADOS EN CASOS DE DOMINIO:")
+            print(f" • Modelo Original: {correctos_original}/{len(casos_dominio)} ({accuracy_original_dominio:.1f}%)")
+            print(f" • Modelo Optimizado: {correctos_optimizado}/{len(casos_dominio)} ({accuracy_optimizado_dominio:.1f}%)")
 
             # Guardar modelo optimizado
-            print(f"\n💾 GUARDANDO MODELO OPTIMIZADO...")
+            print(f"\n GUARDANDO MODELO OPTIMIZADO...")
             model_gastro_path = project_root / "data" / "models" / "sentiment_model_gastro_optimized.pkl"
             modelo_gastro.save(str(model_gastro_path))
 
-            print(f"✅ Modelo gastronómico guardado: {model_gastro_path.name}")
-            print(f"   Tamaño: {model_gastro_path.stat().st_size / 1024:.2f} KB")
+            print(f" Modelo gastronómico guardado: {model_gastro_path.name}")
+            print(f" Tamaño: {model_gastro_path.stat().st_size / 1024:.2f} KB")
 
             # RECOMENDACIÓN FINAL
             print(f"\n" + "=" * 80)
-            print("🎯 RECOMENDACIÓN FINAL")
+            print(" RECOMENDACIÓN FINAL")
             print("=" * 80)
 
             mejora_dominio = accuracy_optimizado_dominio - accuracy_original_dominio
 
             if accuracy_gastro >= 0.75 and kappa_gastro >= 0.60 and mejora_dominio >= 20:
-                print("✅ USAR MODELO OPTIMIZADO GASTRONÓMICO")
-                print("   • Mantiene métricas generales")
-                print(f"   • Mejora {mejora_dominio:.1f}% en casos del dominio")
-                print("   • Distingue satisfacción de información de servicio")
+                print(" USAR MODELO OPTIMIZADO GASTRONÓMICO")
+                print(" • Mantiene métricas generales")
+                print(f" • Mejora {mejora_dominio:.1f}% en casos del dominio")
+                print(" • Distingue satisfacción de información de servicio")
                 print()
-                print("🔧 Para activar:")
-                print("   cp data/models/sentiment_model_gastro_optimized.pkl data/models/sentiment_model.pkl")
+                print(" Para activar:")
+                print(" cp data/models/sentiment_model_gastro_optimized.pkl data/models/sentiment_model.pkl")
 
             elif accuracy_gastro >= 0.70:
-                print("🟡 MODELO OPTIMIZADO ES ACEPTABLE")
-                print("   • Considera A/B testing")
-                print("   • Evalúa con más datos reales")
+                print(" MODELO OPTIMIZADO ES ACEPTABLE")
+                print(" • Considera A/B testing")
+                print(" • Evalúa con más datos reales")
 
             else:
-                print("⚠️ MANTENER MODELO HÍBRIDO ACTUAL")
-                print("   • Modelo optimizado reduce accuracy general")
-                print("   • Considerar post-procesamiento específico")
+                print(" MANTENER MODELO HÍBRIDO ACTUAL")
+                print(" • Modelo optimizado reduce accuracy general")
+                print(" • Considerar post-procesamiento específico")
 
         else:
-            print("✅ El modelo actual maneja bien la mayoría de casos informativos")
-            print("   Solo casos menores requieren ajuste")
+            print(" El modelo actual maneja bien la mayoría de casos informativos")
+            print(" Solo casos menores requieren ajuste")
 
         # GUÍA DE INTERPRETACIÓN DE MÉTRICAS
         print(f"\n" + "=" * 80)
-        print("📊 GUÍA DE INTERPRETACIÓN DE MÉTRICAS Y CONFIANZA")
+        print(" GUÍA DE INTERPRETACIÓN DE MÉTRICAS Y CONFIANZA")
         print("=" * 80)
 
-        print("\n🎯 MÉTRICAS GENERALES ESPERADAS (Modelo en Producción):")
-        print("   ┌─────────────────────────────┬──────────────┬──────────────┐")
-        print("   │ Métrica                     │ Mínimo       │ Recomendado  │")
-        print("   ├─────────────────────────────┼──────────────┼──────────────┤")
-        print("   │ Accuracy                    │ 75%          │ 80-85%       │")
-        print("   │ Cohen's Kappa               │ 0.60         │ 0.70-0.80    │")
-        print("   │ Precision (promedio)        │ 73%          │ 78-83%       │")
-        print("   │ Recall (promedio)           │ 72%          │ 77-82%       │")
-        print("   │ F1-Score (promedio)         │ 72%          │ 77-82%       │")
-        print("   └─────────────────────────────┴──────────────┴──────────────┘")
+        print("\n MÉTRICAS GENERALES ESPERADAS (Modelo en Producción):")
+        print(" ┌─────────────────────────────┬──────────────┬──────────────┐")
+        print(" │ Métrica │ Mínimo │ Recomendado │")
+        print(" ├─────────────────────────────┼──────────────┼──────────────┤")
+        print(" │ Accuracy │ 75% │ 80-85% │")
+        print(" │ Cohen's Kappa │ 0.60 │ 0.70-0.80 │")
+        print(" │ Precision (promedio) │ 73% │ 78-83% │")
+        print(" │ Recall (promedio) │ 72% │ 77-82% │")
+        print(" │ F1-Score (promedio) │ 72% │ 77-82% │")
+        print(" └─────────────────────────────┴──────────────┴──────────────┘")
 
-        print("\n📋 MÉTRICAS POR CLASE ESPERADAS:")
-        print("   POSITIVO:")
-        print("      • Precision: 80-88% (de las predicciones positivas, cuántas son correctas)")
-        print("      • Recall:    85-92% (de los comentarios positivos reales, cuántos detectamos)")
-        print("      • F1-Score:  82-90% (balance entre precision y recall)")
+        print("\n MÉTRICAS POR CLASE ESPERADAS:")
+        print(" POSITIVO:")
+        print(" • Precision: 80-88% (de las predicciones positivas, cuántas son correctas)")
+        print(" • Recall: 85-92% (de los comentarios positivos reales, cuántos detectamos)")
+        print(" • F1-Score: 82-90% (balance entre precision y recall)")
 
-        print("\n   NEUTRO:")
-        print("      • Precision: 50-65% (clase más difícil, menos datos)")
-        print("      • Recall:    45-60% (difícil de detectar, se confunde con otros)")
-        print("      • F1-Score:  48-62% (esperado que sea menor)")
+        print("\n NEUTRO:")
+        print(" • Precision: 50-65% (clase más difícil, menos datos)")
+        print(" • Recall: 45-60% (difícil de detectar, se confunde con otros)")
+        print(" • F1-Score: 48-62% (esperado que sea menor)")
 
-        print("\n   NEGATIVO:")
-        print("      • Precision: 75-85% (buena detección de comentarios negativos)")
-        print("      • Recall:    70-80% (captamos la mayoría de negativos)")
-        print("      • F1-Score:  72-82% (buen balance)")
+        print("\n NEGATIVO:")
+        print(" • Precision: 75-85% (buena detección de comentarios negativos)")
+        print(" • Recall: 70-80% (captamos la mayoría de negativos)")
+        print(" • F1-Score: 72-82% (buen balance)")
 
-        print("\n🎨 UMBRALES DE CONFIANZA PARA LA INTERFAZ (UI):")
-        print("   ┌─────────────┬──────────────────┬─────────────┬────────────────────────┐")
-        print("   │ Confianza   │ Estado           │ Indicador   │ Acción en UI           │")
-        print("   ├─────────────┼──────────────────┼─────────────┼────────────────────────┤")
-        print("   │ ≥ 90%       │ MUY CONFIABLE    │ ✓✓ Verde    │ Mostrar con seguridad  │")
-        print("   │ 80-89%      │ CONFIABLE        │ ✓ Verde     │ Mostrar normalmente    │")
-        print("   │ 70-79%      │ MODERADO         │ ⚠ Amarillo  │ + botón \"Revisar\"      │")
-        print("   │ 60-69%      │ BAJA CONFIANZA   │ ? Naranja   │ Sugerir revisión       │")
-        print("   │ < 60%       │ INDETERMINADO    │ ✗ Rojo      │ NO mostrar predicción  │")
-        print("   └─────────────┴──────────────────┴─────────────┴────────────────────────┘")
+        print("\n UMBRALES DE CONFIANZA PARA LA INTERFAZ (UI):")
+        print(" ┌─────────────┬──────────────────┬─────────────┬────────────────────────┐")
+        print(" │ Confianza │ Estado │ Indicador │ Acción en UI │")
+        print(" ├─────────────┼──────────────────┼─────────────┼────────────────────────┤")
+        print(" │ ≥ 90% │ MUY CONFIABLE │ Verde │ Mostrar con seguridad │")
+        print(" │ 80-89% │ CONFIABLE │ Verde │ Mostrar normalmente │")
+        print(" │ 70-79% │ MODERADO │ ⚠ Amarillo │ + botón \"Revisar\" │")
+        print(" │ 60-69% │ BAJA CONFIANZA │ ? Naranja │ Sugerir revisión │")
+        print(" │ < 60% │ INDETERMINADO │ ✗ Rojo │ NO mostrar predicción │")
+        print(" └─────────────┴──────────────────┴─────────────┴────────────────────────┘")
 
-        print("\n💡 EJEMPLOS DE QUÉ MOSTRAR AL USUARIO:")
+        print("\n EJEMPLOS DE QUÉ MOSTRAR AL USUARIO:")
         print()
 
         # Ejemplos con la función de interpretación
@@ -948,29 +948,29 @@ def optimizar_modelo_satisfaccion_gastronomica():
 
         for comentario, sentiment, confidence in ejemplos_ui:
             info = interpretar_confianza(sentiment, confidence)
-            print(f"   📝 \"{comentario}\"")
-            print(f"      → {info['icon']} {info['label']} ({info['confidence']:.1%}) - {info['status']}")
-            print(f"      → UI: {info['accion_recomendada']}")
+            print(f" \"{comentario}\"")
+            print(f" → {info['icon']} {info['label']} ({info['confidence']:.1%}) - {info['status']}")
+            print(f" → UI: {info['accion_recomendada']}")
             print()
 
-        print("🔧 RECOMENDACIONES PARA IMPLEMENTACIÓN:")
-        print("   1. Siempre mostrar el porcentaje de confianza al usuario")
-        print("   2. Usar colores e íconos para indicar nivel de confiabilidad")
-        print("   3. Para confianza < 70%, agregar botón de \"Reportar error\"")
-        print("   4. Mostrar top-3 probabilidades en modo avanzado/debug")
-        print("   5. Registrar casos de baja confianza para reentrenamiento")
-        print("   6. Calibrar el modelo periódicamente con datos nuevos")
+        print(" RECOMENDACIONES PARA IMPLEMENTACIÓN:")
+        print(" 1. Siempre mostrar el porcentaje de confianza al usuario")
+        print(" 2. Usar colores e íconos para indicar nivel de confiabilidad")
+        print(" 3. Para confianza < 70%, agregar botón de \"Reportar error\"")
+        print(" 4. Mostrar top-3 probabilidades en modo avanzado/debug")
+        print(" 5. Registrar casos de baja confianza para reentrenamiento")
+        print(" 6. Calibrar el modelo periódicamente con datos nuevos")
 
-        print("\n📈 MEJORA CONTINUA:")
-        print("   • Recolectar feedback del usuario sobre predicciones")
-        print("   • Priorizar reentrenamiento con casos de baja confianza")
-        print("   • Monitorear métricas semanalmente en producción")
-        print("   • Actualizar modelo cuando accuracy baje de 75%")
+        print("\n MEJORA CONTINUA:")
+        print(" • Recolectar feedback del usuario sobre predicciones")
+        print(" • Priorizar reentrenamiento con casos de baja confianza")
+        print(" • Monitorear métricas semanalmente en producción")
+        print(" • Actualizar modelo cuando accuracy baje de 75%")
 
         print(f"\n" + "=" * 80)
 
     except Exception as e:
-        print(f"❌ Error en optimización: {e}")
+        print(f" Error en optimización: {e}")
         import traceback
         traceback.print_exc()
 

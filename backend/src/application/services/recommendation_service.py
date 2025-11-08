@@ -8,10 +8,10 @@ from typing import List, Dict, Any, Union
 from src.domain import Restaurant, User, Recommendation
 from src.domain.repositories import RestaurantRepository
 from src.application.dto import (
-    RecommendationRequestDTO,
-    RecommendationResponseDTO,
-    RecommendationItemDTO,
-    RestaurantDTO
+ RecommendationRequestDTO,
+ RecommendationResponseDTO,
+ RecommendationItemDTO,
+ RestaurantDTO
 )
 
 
@@ -40,9 +40,9 @@ class RecommendationService:
     """Service de Recomendaciones con lógica de negocio personalizada."""
 
     def __init__(
-            self,
-            restaurant_repository: RestaurantRepository,
-            use_ml_models: bool = True
+        self,
+        restaurant_repository: RestaurantRepository,
+        use_ml_models: bool = True
     ):
         """
         Constructor con Dependency Injection.
@@ -101,8 +101,8 @@ class RecommendationService:
             print("RecommendationService initialized (simple algorithm)")
 
     def get_recommendations(
-            self,
-            request: RecommendationRequestDTO
+        self,
+        request: RecommendationRequestDTO
     ) -> RecommendationResponseDTO:
         """
         Obtener recomendaciones personalizadas.
@@ -168,9 +168,9 @@ class RecommendationService:
         )
 
     def _filter_candidates(
-            self,
-            user: User,
-            filters: Dict
+        self,
+        user: User,
+        filters: Dict
     ) -> List[Restaurant]:
         """Filtra restaurantes candidatos según preferencias y filtros."""
         candidates = self.restaurant_repository.find_all()
@@ -208,9 +208,9 @@ class RecommendationService:
         return candidates
 
     def _calculate_recommendation_score(
-            self,
-            user: User,
-            restaurant: Restaurant
+        self,
+        user: User,
+        restaurant: Restaurant
     ) -> float:
         """
         Calcula el score de recomendación (0.0 - 1.0).
@@ -228,25 +228,25 @@ class RecommendationService:
         distance_score = max(0.0, 1.0 - (float(distance) / 10.0))
 
         category_score = 1.0 if (
-                user.preferred_category and
-                restaurant.category.lower() == user.preferred_category.lower()
+            user.preferred_category and
+            restaurant.category.lower() == user.preferred_category.lower()
         ) else 0.5
 
         final_score = (
-                rating_score * 0.4 +
-                popularity_score * 0.3 +
-                distance_score * 0.2 +
-                category_score * 0.1
+            rating_score * 0.4 +
+            popularity_score * 0.3 +
+            distance_score * 0.2 +
+            category_score * 0.1
         )
 
         return round(float(final_score), 3)
 
     def _calculate_distance(
-            self,
-            lat1: float,
-            long1: float,
-            lat2: float,
-            long2: float
+        self,
+        lat1: float,
+        long1: float,
+        lat2: float,
+        long2: float
     ) -> float:
         """Calcula distancia aproximada en km usando aproximación euclidiana."""
         lat_diff = (lat2 - lat1) * 111
@@ -255,10 +255,10 @@ class RecommendationService:
         return round(distance, 2)
 
     def _generate_reason(
-            self,
-            restaurant: Restaurant,
-            score: float,
-            distance: float
+        self,
+        restaurant: Restaurant,
+        score: float,
+        distance: float
     ) -> str:
         """Genera una razón legible para la recomendación."""
         reasons = []
@@ -286,8 +286,8 @@ class RecommendationService:
         return " ".join(reasons)
 
     def _to_recommendation_item_dto(
-            self,
-            recommendation: Recommendation
+        self,
+        recommendation: Recommendation
     ) -> RecommendationItemDTO:
         """Convierte Recommendation entity a DTO."""
         restaurant = recommendation.restaurant

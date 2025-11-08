@@ -8,6 +8,12 @@ from src.domain.repositories import RestaurantRepository, UserRepository, Review
 from src.infrastructure.repositories import CSVRestaurantRepository, MemoryUserRepository, CSVReviewRepository
 from src.ml.models import SentimentAnalysisModel
 
+# Nuevas importaciones para distritos
+from src.domain.repositories.district_repository import DistrictRepository
+from src.infrastructure.repositories.csv_district_repository import CSVDistrictRepository
+from src.application.use_cases.district_use_cases import DistrictUseCases
+from src.application.services.district_service import DistrictService
+
 
 class Container:
     """
@@ -30,7 +36,7 @@ class Container:
             print("Dependency Injection Container initialized")
 
     def restaurant_repository(self,
-                              csv_path: str = 'data/processed/restaurantes_sin_anomalias.csv') -> RestaurantRepository:
+                            csv_path: str = 'data/processed/restaurantes_sin_anomalias.csv') -> RestaurantRepository:
         cache_key = f'restaurant_repository:{csv_path}'
         if cache_key not in self._dependencies:
             self._dependencies[cache_key] = CSVRestaurantRepository(csv_path)
@@ -72,22 +78,44 @@ class Container:
                     accuracy = metadata.get('test_metrics', {}).get('accuracy', 0)
                     kappa = metadata.get('test_metrics', {}).get('cohen_kappa', 0)
 
-                    print(f"✓ Modelo de sentimientos cargado:")
-                    print(f"  • Tipo: {model_type}")
-                    print(f"  • Accuracy: {accuracy:.1%}")
-                    print(f"  • Cohen's Kappa: {kappa:.4f}")
+                    print(f" Modelo de sentimientos cargado:")
+                    print(f" • Tipo: {model_type}")
+                    print(f" • Accuracy: {accuracy:.1%}")
+                    print(f" • Cohen's Kappa: {kappa:.4f}")
 
                     self._dependencies[cache_key] = model
                 else:
-                    print(f"⚠️ Modelo no entrenado en: {model_path}")
+                    print(f" Modelo no entrenado en: {model_path}")
                     raise ValueError(f"Modelo no entrenado: {model_path}")
 
             except Exception as e:
-                print(f"❌ Error cargando modelo de sentimientos: {e}")
-                print(f"   Ruta: {model_path}")
+                print(f" Error cargando modelo de sentimientos: {e}")
+                print(f" Ruta: {model_path}")
                 raise RuntimeError(f"No se pudo cargar modelo de sentimientos: {e}")
 
         return self._dependencies[cache_key]
+
+    def district_repository(self,
+                           csv_path: str = 'data/processed/restaurantes_limpio.csv') -> DistrictRepository:
+        """Obtener repositorio de distritos (Singleton)"""
+        cache_key = f'district_repository:{csv_path}'
+        if cache_key not in self._dependencies:
+            self._dependencies[cache_key] = CSVDistrictRepository(csv_path)
+        return self._dependencies[cache_key]
+
+    def district_use_cases(self) -> DistrictUseCases:
+        """Obtener casos de uso de distritos (Singleton)"""
+        if 'district_use_cases' not in self._dependencies:
+            district_repo = self.district_repository()
+            self._dependencies['district_use_cases'] = DistrictUseCases(district_repo)
+        return self._dependencies['district_use_cases']
+
+    def district_service(self) -> DistrictService:
+        """Obtener servicio de distritos (Singleton)"""
+        if 'district_service' not in self._dependencies:
+            district_use_cases = self.district_use_cases()
+            self._dependencies['district_service'] = DistrictService(district_use_cases)
+        return self._dependencies['district_service']
 
     def clear(self) -> None:
         self._dependencies.clear()
@@ -126,3 +154,11 @@ def get_sentiment_model(model_path: str = 'data/models/sentiment_model.pkl') -> 
     - Cohen's Kappa mejorado (0.6208)
     """
     return _container.sentiment_model(model_path)
+
+def get_district_repository(csv_path: str = 'data/processed/restaurantes_limpio.csv') -> DistrictRepository:
+    """Obtener repositorio de distritos"""
+    return _container.district_repository(csv_path)
+
+def get_district_service() -> DistrictService:
+    """Obtener servicio de distritos"""
+    return _container.district_service()

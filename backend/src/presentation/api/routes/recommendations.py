@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 def get_recommendation_service(
-        restaurant_repo: RestaurantRepository = Depends(get_restaurant_repository)
+    restaurant_repo: RestaurantRepository = Depends(get_restaurant_repository)
 ) -> RecommendationService:
     """
     Dependency provider para RecommendationService.
@@ -30,8 +30,8 @@ def get_recommendation_service(
     description="Genera recomendaciones de restaurantes basadas en ubicación y preferencias del usuario."
 )
 async def get_recommendations(
-        request: RecommendationRequestDTO,
-        service: RecommendationService = Depends(get_recommendation_service)
+    request: RecommendationRequestDTO,
+    service: RecommendationService = Depends(get_recommendation_service)
 ):
     """
     Endpoint principal de recomendaciones.
@@ -71,7 +71,7 @@ async def get_recommendations(
     description="Lista todas las categorías de restaurantes disponibles."
 )
 async def get_categories(
-        restaurant_repo: RestaurantRepository = Depends(get_restaurant_repository)
+    restaurant_repo: RestaurantRepository = Depends(get_restaurant_repository)
 ):
     """Obtener lista de categorías."""
     try:
@@ -91,7 +91,7 @@ async def get_categories(
     description="Lista todos los distritos con restaurantes."
 )
 async def get_districts(
-        restaurant_repo: RestaurantRepository = Depends(get_restaurant_repository)
+    restaurant_repo: RestaurantRepository = Depends(get_restaurant_repository)
 ):
     """Obtener lista de distritos."""
     try:

@@ -30,7 +30,7 @@ export function useApiData(): UseApiDataReturn {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error loading data';
       setError(errorMessage);
-      console.error('Error fetching API data:', err);
+      // Silently handle API errors
     } finally {
       setLoading(false);
     }

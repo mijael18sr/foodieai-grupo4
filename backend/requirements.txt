@@ -14,7 +14,7 @@ scipy
 
 # NLP - Para análisis de sentimientos
 nltk>=3.8
-wordcloud
+#wordcloud
 
 # Visualization
 matplotlib
@@ -29,7 +29,11 @@ httpx
 # Monitoring
 prometheus-client
 python-json-logger
+psutil
 
 # Utils
 python-multipart
 aiofiles
+psutil
+
+pip

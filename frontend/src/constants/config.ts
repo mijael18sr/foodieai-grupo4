@@ -4,6 +4,7 @@ export const API_CONFIG = {
   BASE_URL: 'http://localhost:8000',
   TIMEOUT: 10000,
   DEFAULT_TOP_N: 10,
+  IMAGES_BASE_URL: 'http://localhost:8000/docs/figures',
 } as const;
 
 export const UI_CONFIG = {

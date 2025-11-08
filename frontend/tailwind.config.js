@@ -3,6 +3,13 @@ import { defineConfig } from '@tailwindcss/vite'
 export default defineConfig({
   theme: {
     extend: {
+      screens: {
+        'xs': '375px',  // Para móviles muy pequeños
+        '2xs': '320px', // Para móviles extra pequeños
+        'mobile': {'max': '639px'}, // Solo móviles
+        'tablet': {'min': '640px', 'max': '1023px'}, // Solo tablets
+        'desktop': {'min': '1024px'}, // Solo desktop
+      },
       colors: {
         primary: {
           50: '#f8fafc',

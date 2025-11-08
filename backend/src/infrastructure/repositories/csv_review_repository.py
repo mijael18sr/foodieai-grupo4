@@ -64,8 +64,8 @@ class CSVReviewRepository(ReviewRepository):
             if 'review_date' in self._df.columns:
                 self._df['review_date'] = pd.to_datetime(self._df['review_date'], errors='coerce')
 
-            print(f"✓ Reseñas cargadas: {len(self._df):,} registros desde {self.csv_path}")
-            print(f"  - Columna de texto: '{self.text_column}'")
+            print(f" Reseñas cargadas: {len(self._df):,} registros desde {self.csv_path}")
+            print(f" - Columna de texto: '{self.text_column}'")
 
         except Exception as e:
             raise Exception(f"Error cargando reseñas desde CSV: {e}")
@@ -196,7 +196,7 @@ class CSVReviewRepository(ReviewRepository):
         path = Path(output_path) if output_path else self.csv_path
         path.parent.mkdir(parents=True, exist_ok=True)
         self._df.to_csv(path, index=False)
-        print(f"✓ Reseñas guardadas en: {path}")
+        print(f" Reseñas guardadas en: {path}")
 
     def count_by_restaurant(self, restaurant_id: str) -> int:
         """Contar reseñas de un restaurante"""

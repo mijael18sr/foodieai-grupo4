@@ -3,7 +3,7 @@ Request DTOs
 Objetos para recibir datos de entrada en la API.
 """
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 from typing import Optional, Dict
 
 

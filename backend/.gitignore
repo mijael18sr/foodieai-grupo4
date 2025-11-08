@@ -1,0 +1,95 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb.backup*
+notebooks/*.md
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite
+
+# Models (grandes, usar Git LFS si es necesario)
+# data/models/*.pkl  # Descomentar si los modelos son muy grandes
+
+# Data (archivos grandes, solo para desarrollo local)
+# data/raw/*.csv  # Descomentar si los CSVs son muy grandes
+# data/processed/*.csv  # Descomentar si los CSVs procesados son muy grandes
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Scripts de limpieza temporal (ya ejecutados)
+limpiar_*.py
+analizar_*.py
+revisar_*.py
+buscar_*.py
+listar_*.py
+agregar_*.py
+corregir_*.py
+generar_matriz_*.py
+solucionar_*.py
+eliminar_*.py
+cambiar_*.py
+fix_*.py
+
+# Documentación redundante (mantener solo las principales)
+*_COMPLETO.md
+*_FINAL.md
+*_RESUELTO.md
+*_RESUMEN.md
+CHECKLIST*.md
+INDICE*.md
+

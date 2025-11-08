@@ -204,6 +204,13 @@ backend/data/raw/Lima_Restaurants_2025_08_13_clean.csv
 backend/data/processed/reviews_con_sentimiento.csv
 backend/data/processed/modelo_limpio.csv
 
+# Archivos temporales de desarrollo
+clean_project.py
+verify_github_ready.py
+**/fix_indent_temp.py
+**/*_temp.*
+**/*_backup.*
+
 # Mantener solo archivos esenciales más pequeños
 # !backend/data/raw/restaurant_metadata.csv (< 1MB)
 # !backend/data/models/*.pkl (todos < 10MB)

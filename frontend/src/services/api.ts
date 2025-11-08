@@ -16,10 +16,9 @@ const apiClient = axios.create({
   },
 });
 
-// Add request interceptor for logging
+// Add request interceptor for error handling
 apiClient.interceptors.request.use(
   (config) => {
-    console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`);
     return config;
   },
   (error) => {
@@ -30,11 +29,9 @@ apiClient.interceptors.request.use(
 // Add response interceptor for error handling
 apiClient.interceptors.response.use(
   (response) => {
-    console.log(`✅ API Response: ${response.status} ${response.config.url}`);
     return response;
   },
   (error) => {
-    console.error(`❌ API Error: ${error.response?.status} ${error.config?.url}`, error.response?.data);
     return Promise.reject(error instanceof Error ? error : new Error(String(error)));
   }
 );
@@ -45,7 +42,7 @@ export class RestaurantApiService {
    * Get API health status
    */
   static async getHealth(): Promise<HealthResponse> {
-    const response: AxiosResponse<HealthResponse> = await apiClient.get('/api/v1/health');
+    const response: AxiosResponse<HealthResponse> = await apiClient.get('/api/v1/health/status');
     return response.data;
   }
 
@@ -69,20 +66,11 @@ export class RestaurantApiService {
    * Get personalized restaurant recommendations
    */
   static async getRecommendations(request: RecommendationRequest): Promise<RecommendationResponse> {
-    console.log('🌐 API Service: getRecommendations called with:', request);
-    
-    try {
-      const response: AxiosResponse<RecommendationResponse> = await apiClient.post(
-        '/api/v1/recommendations',
-        request
-      );
-      console.log('✅ API Service: Success response:', response.data);
-      console.log('📊 Recommendations count:', response.data.recommendations?.length || 0);
-      return response.data;
-    } catch (error) {
-      console.error('❌ API Service: Error in getRecommendations:', error);
-      throw error;
-    }
+    const response: AxiosResponse<RecommendationResponse> = await apiClient.post(
+      '/api/v1/recommendations',
+      request
+    );
+    return response.data;
   }
 
   /**
@@ -116,8 +104,7 @@ export class RestaurantApiService {
     try {
       await this.getHealth();
       return true;
-    } catch (error) {
-      console.error('API Connection failed:', error);
+    } catch {
       return false;
     }
   }
