@@ -1,54 +1,163 @@
 # Sistema de Recomendación de Restaurantes con IA
 
-> **Proyecto de Machine Learning - UNMSM Postgrado** 
+> **Proyecto de Machine Learning - UNMSM Postgrado**  
 > Sistema inteligente de recomendación de restaurantes en Lima usando análisis de sentimientos y ML.
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
-[![Machine Learning](https://img.shields.io/badge/ML-Scikit--learn-orange.svg)](https://scikit-learn.org/)
-[![License](https://img.shields.io/badge/License-Academic-yellow.svg)]()
 
-## Descripción del Proyecto
+## Descripción
 
-Sistema completo de recomendación de restaurantes que utiliza **Machine Learning** y **análisis de sentimientos** para ayudar a los usuarios a descubrir los mejores restaurantes en Lima. Combina técnicas avanzadas de procesamiento de lenguaje natural con algoritmos de recomendación para ofrecer sugerencias personalizadas.
+Sistema de recomendación que utiliza Machine Learning y análisis de sentimientos para sugerir restaurantes en Lima. Combina técnicas de procesamiento de lenguaje natural con algoritmos de recomendación personalizada.
 
-### Características Principales
+**Características:**
+- Análisis de sentimientos con 84.36% accuracy
+- Recomendaciones basadas en ubicación y preferencias  
+- API REST con FastAPI y frontend React moderno
+- 706 restaurantes y 378,969 reviews procesadas
 
-- ** IA de Análisis de Sentimientos:** Modelo ensemble con 84.36% de accuracy
-- ** Recomendaciones Gelocalizadas:** Basadas en ubicación y preferencias
-- ** Interfaz Moderna:** Frontend React con TypeScript y Tailwind CSS
-- ** API REST Rápida:** Backend FastAPI con documentación automática
-- ** Arquitectura Limpia:** Código mantenible y escalable
-- ** Métricas en Tiempo Real:** Dashboard con estadísticas del modelo
+## Inicio Rápido
 
-## Arquitectura del Sistema
+### Requisitos
+- Python 3.10+ y Node.js 18+
+- 5GB espacio libre
 
-```
- FULL-STACK MACHINE LEARNING APPLICATION
- Frontend (React + TypeScript)
- Interfaz de usuario moderna
- Búsqueda inteligente con filtros
- Visualización de resultados
- Geolocalización automática
- Backend (FastAPI + Python)
- API REST con documentación automática
- Servicios de ML y recomendación
- Análisis de sentimientos en tiempo real
- Arquitectura Clean Architecture
- Machine Learning Pipeline
- Modelo ensemble de sentimientos (84.36% accuracy)
- Sistema de clustering de restaurantes
- Predictor de ratings
- Motor de recomendación personalizada
- Datos
- 706 restaurantes de alta calidad
- 378,969 reviews de clientes
- Análisis de sentimientos aplicado
- Datasets limpios y procesados
+### Instalación (3 minutos)
+
+```bash
+# 1. Clonar repositorio
+git clone https://github.com/mijael18sr/foodieai-grupo4.git
+cd restaurant-recommender-ml
+
+# 2. Backend (Terminal 1)
+cd backend
+python -m venv .venv && .venv\Scripts\activate
+pip install -r requirements.txt
+python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('wordnet')"
+python start_server.py
+
+# 3. Frontend (Terminal 2)
+cd ../frontend
+npm install && npm run dev
 ```
 
-## INICIO RÁPIDO - 5 Minutos
+### Acceso
+- **Frontend:** http://localhost:5173
+- **API Docs:** http://localhost:8000/docs
+- **Health Check:** http://localhost:8000/api/v1/health
+
+## Estructura del Proyecto
+
+```
+restaurant-recommender-ml/
+├── backend/                 # API FastAPI + ML
+│   ├── data/               # Datasets y modelos
+│   │   ├── models/        # Modelos ML entrenados
+│   │   └── processed/     # Datos procesados
+│   ├── src/               # Código fuente (Clean Architecture)
+│   ├── requirements.txt   # Dependencias Python
+│   └── start_server.py   # Iniciar servidor
+├── frontend/              # React + TypeScript
+│   ├── src/              # Componentes React
+│   ├── package.json     # Dependencias Node.js
+│   └── vite.config.ts   # Configuración build
+└── README.md            # Este archivo
+```
+
+## API Endpoints Principales
+
+### Análisis de Sentimientos
+```http
+POST /api/v1/sentiment/analyze
+{
+  "text": "La comida estuvo deliciosa y el servicio excelente"
+}
+```
+
+### Recomendaciones
+```http
+POST /api/v1/recommendations  
+{
+  "user_location": {"lat": -12.0464, "lng": -77.0428},
+  "preferences": {"category": "Peruana", "min_rating": 4.0},
+  "top_n": 10
+}
+```
+
+## Métricas del Modelo
+
+| Métrica | Valor | Estado |
+|---------|-------|--------|
+| **Accuracy** | 84.36% | Excelente |
+| **Precision (Positivos)** | 95.8% | Muy alto |
+| **Recall (Positivos)** | 90.1% | Muy alto |
+| **Tiempo respuesta** | <100ms | Rápido |
+
+## Solución de Problemas
+
+### Error: "No module named 'fastapi'"
+```bash
+cd backend
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### Error: "Port 8000 already in use"
+```bash
+netstat -ano | findstr :8000
+taskkill /F /PID <PID_NUMBER>
+```
+
+### Error: "No se encuentra modelo sentiment_model.pkl"
+```bash
+cd backend
+python reentrenar_modelo_limpio.py
+```
+
+## Archivos de Datos
+
+**Incluidos en el repositorio:**
+- Modelos ML entrenados (sentiment_model.pkl, etc.)
+- Datasets pequeños (<50MB)
+- 706 restaurantes procesados
+
+**Excluidos (>100MB):**
+- `Lima_Restaurants_2025_08_13.csv` (131MB)
+- `reviews_con_sentimiento.csv` (1.3GB)
+- Los modelos funcionan sin estos archivos grandes
+
+## Testing
+
+```bash
+# Backend
+cd backend && python test_api_funcionando.py
+
+# Frontend
+cd frontend && npm run test
+```
+
+## Tecnologías
+
+**Backend:** Python, FastAPI, Scikit-learn, NLTK, Pandas  
+**Frontend:** React 19, TypeScript, Tailwind CSS, Vite  
+**ML:** Ensemble (Complement NB + Logistic Regression)  
+**Arquitectura:** Clean Architecture, API REST
+
+## Equipo
+
+**UNMSM - Postgrado en Machine Learning**  
+Desarrollado con fines académicos y de investigación.
+
+## Enlaces
+
+- **Repositorio:** https://github.com/mijael18sr/foodieai-grupo4
+- **Documentación API:** http://localhost:8000/docs (después de iniciar)
+- **Demo Frontend:** http://localhost:5173 (después de iniciar)
+
+---
+
+*Para más detalles técnicos, consulta los archivos en /backend y /frontend*
 
 ### Opción A: Ejecución Inmediata (Recomendada)
 
