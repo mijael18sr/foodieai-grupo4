@@ -2,7 +2,7 @@
 
 > **Algunos archivos de datos grandes no están incluidos en el repositorio de GitHub debido a restricciones de tamaño (100MB máx.)**
 
-## 🚫 Archivos No Incluidos en GitHub
+## Archivos No Incluidos en GitHub
 
 Los siguientes archivos deben descargarse por separado o regenerarse localmente:
 
@@ -45,7 +45,7 @@ backend/data/processed/modelo_limpio.csv
 
 ## OPCIÓN B: Regenerar Localmente (Recomendado)
 
-### ⚡ Regeneración Rápida (5-10 minutos)
+### Regeneración Rápida (5-10 minutos)
 
 ```bash
 cd backend
@@ -94,7 +94,7 @@ ls backend/data/processed/modelo_limpio.csv # ~52MB
 
 ## ¿Por qué No Están en GitHub?
 
-### 📏 Limitaciones de GitHub
+### Limitaciones de GitHub
 - **Límite por archivo:** 100 MB máximo
 - **Aviso de advertencia:** 50 MB
 - **Repositorio completo:** Recomendado < 1 GB
@@ -144,7 +144,7 @@ npm run dev
 
 ## Soporte
 
-### 🆘 ¿Problemas con los datos?
+### ¿Problemas con los datos?
 
 1. **Verifica las rutas** de los archivos
 2. **Ejecuta el script de verificación:** `python verify_github_ready.py`

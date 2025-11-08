@@ -2,64 +2,64 @@
 
 Sistema de recomendación de restaurantes en Lima usando Machine Learning.
 
-## 🚀 Estado del Proyecto
+## Estado del Proyecto
 
-✅ **Limpieza de Emojis Completada**  
-✅ **Pipeline de Datos Actualizado**  
-✅ **API REST Configurada**  
+ **Limpieza de Emojis Completada** 
+ **Pipeline de Datos Actualizado** 
+ **API REST Configurada** 
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 backend/
-├── data/
-│   ├── raw/                                    # Datos crudos
-│   │   ├── Lima_Restaurants_2025_08_13_clean.csv  # ✅ Dataset limpio (sin emojis)
-│   │   └── restaurant_metadata.csv             # Metadatos
-│   ├── processed/                              # Datos procesados por pipeline
-│   │   ├── restaurantes_limpio.csv
-│   │   ├── reviews_limpio.csv
-│   │   └── reviews_con_sentimiento.csv
-│   └── models/                                 # Modelos ML (solo esenciales)
-│       ├── sentiment_model.pkl                 # ✅ Modelo de sentimientos (84.36%)
-│       ├── clustering_model.pkl                # ✅ Clustering de restaurantes
-│       ├── rating_predictor.pkl                # ✅ Predictor de ratings
-│       └── recommender_system.pkl              # ✅ Sistema de recomendación
-├── src/                                        # Código fuente (Clean Architecture)
-│   ├── application/                            # Servicios de aplicación
-│   │   ├── services/
-│   │   │   ├── sentiment_service.py
-│   │   │   └── recommendation_service.py
-│   │   └── dto/                                # Data Transfer Objects
-│   ├── domain/                                 # Lógica de negocio
-│   │   ├── entities/                           # Entidades del dominio
-│   │   └── repositories/                       # Interfaces de repositorios
-│   ├── infrastructure/                         # Implementaciones
-│   │   ├── ml/model_loader.py                  # Cargador de modelos
-│   │   └── repositories/                       # Repositorios CSV
-│   └── presentation/                           # API REST
-│       └── api/
-│           ├── main.py                         # App FastAPI
-│           └── routes/                         # Endpoints
-│               ├── health.py
-│               ├── sentiment.py
-│               └── recommendations.py
-├── comparar_modelos.py                         # 🔧 Diagnóstico
-├── diagnosticar_modelo.py                      # 🔧 Diagnóstico
-├── optimizar_modelo_gastronómico.py            # 🔧 Optimización
-├── reentrenar_modelo_limpio.py                 # 🎯 Entrenamiento principal
-├── start_server.py                             # 🚀 Iniciar servidor
-├── test_api_funcionando.py                     # ✅ Tests
-├── test_integracion_completa.py                # ✅ Tests
-├── requirements.txt                            # 📦 Dependencias
-└── README.md                                   # 📖 Documentación
+ data/
+ raw/ # Datos crudos
+ Lima_Restaurants_2025_08_13_clean.csv # Dataset limpio (sin emojis)
+ restaurant_metadata.csv # Metadatos
+ processed/ # Datos procesados por pipeline
+ restaurantes_limpio.csv
+ reviews_limpio.csv
+ reviews_con_sentimiento.csv
+ models/ # Modelos ML (solo esenciales)
+ sentiment_model.pkl # Modelo de sentimientos (84.36%)
+ clustering_model.pkl # Clustering de restaurantes
+ rating_predictor.pkl # Predictor de ratings
+ recommender_system.pkl # Sistema de recomendación
+ src/ # Código fuente (Clean Architecture)
+ application/ # Servicios de aplicación
+ services/
+ sentiment_service.py
+ recommendation_service.py
+ dto/ # Data Transfer Objects
+ domain/ # Lógica de negocio
+ entities/ # Entidades del dominio
+ repositories/ # Interfaces de repositorios
+ infrastructure/ # Implementaciones
+ ml/model_loader.py # Cargador de modelos
+ repositories/ # Repositorios CSV
+ presentation/ # API REST
+ api/
+ main.py # App FastAPI
+ routes/ # Endpoints
+ health.py
+ sentiment.py
+ recommendations.py
+ comparar_modelos.py # Diagnóstico
+ diagnosticar_modelo.py # Diagnóstico
+ optimizar_modelo_gastronómico.py # Optimización
+ reentrenar_modelo_limpio.py # Entrenamiento principal
+ start_server.py # Iniciar servidor
+ test_api_funcionando.py # Tests
+ test_integracion_completa.py # Tests
+ requirements.txt # Dependencias
+ README.md # Documentación
 ```
 
 ---
 
-## 🚀 GUÍA DE INICIO RÁPIDO (Para Desarrolladores)
+## GUÍA DE INICIO RÁPIDO (Para Desarrolladores)
 
 ### Requisitos Previos
 
@@ -70,7 +70,7 @@ backend/
 
 ---
 
-## 📋 PASO A PASO: Configuración Inicial
+## PASO A PASO: Configuración Inicial
 
 ### PASO 1: Clonar o Descargar el Proyecto
 
@@ -120,11 +120,11 @@ python -m pip install --upgrade pip
 - **Git** (opcional, para clonar el repositorio)
 - **CMD o PowerShell** en Windows
 **Dependencias principales instaladas:**
-- ✅ FastAPI + Uvicorn (API REST)
-- ✅ Pandas + NumPy (Procesamiento de datos)
-- ✅ Scikit-learn (Machine Learning)
-- ✅ NLTK (Procesamiento de lenguaje natural)
-- ✅ Matplotlib + Seaborn (Visualización)
+- FastAPI + Uvicorn (API REST)
+- Pandas + NumPy (Procesamiento de datos)
+- Scikit-learn (Machine Learning)
+- NLTK (Procesamiento de lenguaje natural)
+- Matplotlib + Seaborn (Visualización)
 
 **Tiempo estimado:** 2-5 minutos dependiendo de tu conexión.
 
@@ -140,7 +140,7 @@ python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk
 
 ---
 
-## 🎯 EJECUTAR EL PROYECTO
+## EJECUTAR EL PROYECTO
 
 ### Opción A: Ejecución Rápida (Recomendada)
 
@@ -152,13 +152,13 @@ python start_server.py
 
 **Salida esperada:**
 ```
-🚀 Iniciando Restaurant Recommender API...
-📍 Backend URL: http://localhost:8000
-📖 API Docs: http://localhost:8000/docs
-🔄 Modo desarrollo con auto-reload activado
+ Iniciando Restaurant Recommender API...
+ Backend URL: http://localhost:8000
+ API Docs: http://localhost:8000/docs
+ Modo desarrollo con auto-reload activado
 --------------------------------------------------
-INFO:     Started server process
-INFO:     Uvicorn running on http://0.0.0.0:8000
+INFO: Started server process
+INFO: Uvicorn running on http://0.0.0.0:8000
 ```
 
 **Acceder a la API:**
@@ -242,7 +242,7 @@ python start_server.py
 
 ---
 
-## 🧪 VERIFICAR QUE TODO FUNCIONA
+## VERIFICAR QUE TODO FUNCIONA
 
 ### Test 1: Health Check
 
@@ -257,8 +257,8 @@ Invoke-WebRequest -Uri http://localhost:8000/api/v1/health -UseBasicParsing
 **Respuesta esperada:**
 ```json
 {
-  "status": "healthy",
-  "timestamp": "2025-10-24T..."
+ "status": "healthy",
+ "timestamp": "2025-10-24T..."
 }
 ```
 
@@ -276,7 +276,7 @@ python test_integracion_completa.py
 
 ---
 
-## 🔍 DIAGNÓSTICO Y OPTIMIZACIÓN
+## DIAGNÓSTICO Y OPTIMIZACIÓN
 
 ### Diagnosticar Modelo de Sentimientos
 
@@ -359,11 +359,11 @@ python -m pip install --upgrade pip
 - **Git** (opcional, para clonar el repositorio)
 - **CMD o PowerShell** en Windows
 **Dependencias principales instaladas:**
-- ✅ FastAPI + Uvicorn (API REST)
-- ✅ Pandas + NumPy (Procesamiento de datos)
-- ✅ Scikit-learn (Machine Learning)
-- ✅ NLTK (Procesamiento de lenguaje natural)
-- ✅ Matplotlib + Seaborn (Visualización)
+- FastAPI + Uvicorn (API REST)
+- Pandas + NumPy (Procesamiento de datos)
+- Scikit-learn (Machine Learning)
+- NLTK (Procesamiento de lenguaje natural)
+- Matplotlib + Seaborn (Visualización)
 
 **Tiempo estimado:** 2-5 minutos dependiendo de tu conexión.
 
@@ -379,7 +379,7 @@ python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk
 
 ---
 
-## 🎯 EJECUTAR EL PROYECTO
+## EJECUTAR EL PROYECTO
 
 ### Opción A: Ejecución Rápida (Recomendada)
 
@@ -391,13 +391,13 @@ python start_server.py
 
 **Salida esperada:**
 ```
-🚀 Iniciando Restaurant Recommender API...
-📍 Backend URL: http://localhost:8000
-📖 API Docs: http://localhost:8000/docs
-🔄 Modo desarrollo con auto-reload activado
+ Iniciando Restaurant Recommender API...
+ Backend URL: http://localhost:8000
+ API Docs: http://localhost:8000/docs
+ Modo desarrollo con auto-reload activado
 --------------------------------------------------
-INFO:     Started server process
-INFO:     Uvicorn running on http://0.0.0.0:8000
+INFO: Started server process
+INFO: Uvicorn running on http://0.0.0.0:8000
 ```
 
 **Acceder a la API:**
@@ -481,7 +481,7 @@ python start_server.py
 
 ---
 
-## 🧪 VERIFICAR QUE TODO FUNCIONA
+## VERIFICAR QUE TODO FUNCIONA
 
 ### Test 1: Health Check
 
@@ -496,8 +496,8 @@ Invoke-WebRequest -Uri http://localhost:8000/api/v1/health -UseBasicParsing
 **Respuesta esperada:**
 ```json
 {
-  "status": "healthy",
-  "timestamp": "2025-10-24T..."
+ "status": "healthy",
+ "timestamp": "2025-10-24T..."
 }
 ```
 
@@ -515,7 +515,7 @@ python test_integracion_completa.py
 
 ---
 
-## 🔍 DIAGNÓSTICO Y OPTIMIZACIÓN
+## DIAGNÓSTICO Y OPTIMIZACIÓN
 
 ### Diagnosticar Modelo de Sentimientos
 
@@ -591,9 +591,9 @@ source .venv/bin/activate
 
 ```bash
 # Actualizar pip (recomendado)
-- ✅ Scikit-learn (Machine Learning)
-- ✅ NLTK (Procesamiento de lenguaje natural)
-## ⚡ COMANDOS RÁPIDOS DE REFERENCIA
+- Scikit-learn (Machine Learning)
+- NLTK (Procesamiento de lenguaje natural)
+## COMANDOS RÁPIDOS DE REFERENCIA
 ---
 ### Configuración Inicial (Una sola vez)
 ```bash
@@ -617,7 +617,7 @@ python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk
 python reentrenar_modelo_limpio.py
 
 # 3. Entrenar otros modelos ML
-## 🎯 EJECUTAR EL PROYECTO
+## EJECUTAR EL PROYECTO
 ```
 
 ### Ejecutar Servidor (Día a día)
@@ -651,7 +651,7 @@ python test_integracion_completa.py
 
 ---
 
-## ✅ Checklist de Verificación
+## Checklist de Verificación
 
 Antes de considerarlo funcionando, verifica:
 
@@ -669,7 +669,7 @@ Antes de considerarlo funcionando, verifica:
 
 ---
 
-## 🎓 Para Desarrolladores Nuevos
+## Para Desarrolladores Nuevos
 
 ### ¿Nunca has trabajado con Python/ML? Empieza aquí:
 
@@ -702,27 +702,27 @@ Si ya tienes los modelos entrenados:
 
 ---
 
-## 📞 Contacto y Soporte
+## Contacto y Soporte
 
-**UNMSM - Machine Learning**  
+**UNMSM - Machine Learning** 
 Postgrado San Marcos
 
 ### ¿Tienes problemas?
 
-1. **Revisa la sección** [🐛 Solución de Problemas](#-solución-de-problemas-comunes)
+1. **Revisa la sección** [ Solución de Problemas](#-solución-de-problemas-comunes)
 2. **Verifica el checklist** arriba
 3. **Ejecuta diagnóstico:** `python diagnosticar_modelo.py`
 
 ---
 
-## 🚀 Siguiente Paso
+## Siguiente Paso
 
 ### Si es tu primera vez:
 
 ```bash
 # Ejecuta esto en orden:
-python reentrenar_modelo_limpio.py   # 10-15 min
-python start_server.py                # Servidor inicia
+python reentrenar_modelo_limpio.py # 10-15 min
+python start_server.py # Servidor inicia
 ```
 
 ### Si ya tienes todo configurado:
@@ -731,7 +731,7 @@ python start_server.py                # Servidor inicia
 python start_server.py
 ```
 
-¡El proyecto está listo para funcionar! 🎉
+¡El proyecto está listo para funcionar! 
 
 **Accede a la documentación interactiva:** http://localhost:8000/docs
 python start_server.py
@@ -739,13 +739,13 @@ python start_server.py
 
 **Salida esperada:**
 ```
-🚀 Iniciando Restaurant Recommender API...
-📍 Backend URL: http://localhost:8000
-📖 API Docs: http://localhost:8000/docs
-🔄 Modo desarrollo con auto-reload activado
+ Iniciando Restaurant Recommender API...
+ Backend URL: http://localhost:8000
+ API Docs: http://localhost:8000/docs
+ Modo desarrollo con auto-reload activado
 --------------------------------------------------
-INFO:     Started server process
-INFO:     Uvicorn running on http://0.0.0.0:8000
+INFO: Started server process
+INFO: Uvicorn running on http://0.0.0.0:8000
 ```
 
 **Acceder a la API:**
@@ -829,7 +829,7 @@ python start_server.py
 
 ---
 
-## 🧪 VERIFICAR QUE TODO FUNCIONA
+## VERIFICAR QUE TODO FUNCIONA
 
 ### Test 1: Health Check
 
@@ -844,8 +844,8 @@ Invoke-WebRequest -Uri http://localhost:8000/api/v1/health -UseBasicParsing
 **Respuesta esperada:**
 ```json
 {
-  "status": "healthy",
-  "timestamp": "2025-10-24T..."
+ "status": "healthy",
+ "timestamp": "2025-10-24T..."
 }
 ```
 
@@ -863,7 +863,7 @@ python test_integracion_completa.py
 
 ---
 
-## 🔍 DIAGNÓSTICO Y OPTIMIZACIÓN
+## DIAGNÓSTICO Y OPTIMIZACIÓN
 
 ### Diagnosticar Modelo de Sentimientos
 
@@ -901,17 +901,17 @@ python optimizar_modelo_gastronómico.py
 
 ---
 
-## 📊 Datos del Proyecto
+## Datos del Proyecto
 
 ### Dataset Original
 
 **Fuente:** [Lima Restaurant Review - Kaggle](https://www.kaggle.com/datasets/bandrehc/lima-restaurant-review)
 
 **Estadísticas:**
-- 📍 **706 restaurantes** de alta calidad en Lima
-- 💬 **378,969 reviews** de clientes
-- ⭐ **Ratings:** 1-5 estrellas
-- 📝 **Comentarios** en español (análisis de sentimiento)
+- **706 restaurantes** de alta calidad en Lima
+- **378,969 reviews** de clientes
+- **Ratings:** 1-5 estrellas
+- **Comentarios** en español (análisis de sentimiento)
 
 ### Datos Procesados Disponibles
 
@@ -919,94 +919,94 @@ El proyecto incluye datos ya procesados y listos para usar:
 
 ```
 data/
-├── raw/
-│   ├── Lima_Restaurants_2025_08_13_clean.csv     (Dataset limpio sin emojis)
-│   └── restaurant_metadata.csv                   (Metadatos adicionales)
-└── processed/
-    ├── modelo_limpio.csv                         (Para reentrenamiento: 199,821 reviews)
-    ├── restaurantes_limpio.csv                   (706 restaurantes procesados)
-    ├── reviews_limpio.csv                        (378,969 reviews limpias)
-    └── reviews_con_sentimiento.csv               (Reviews con análisis aplicado)
+ raw/
+ Lima_Restaurants_2025_08_13_clean.csv (Dataset limpio sin emojis)
+ restaurant_metadata.csv (Metadatos adicionales)
+ processed/
+ modelo_limpio.csv (Para reentrenamiento: 199,821 reviews)
+ restaurantes_limpio.csv (706 restaurantes procesados)
+ reviews_limpio.csv (378,969 reviews limpias)
+ reviews_con_sentimiento.csv (Reviews con análisis aplicado)
 ```
 
 ### Preprocesamiento Aplicado
 
 Los datos ya incluyen:
-- ✅ Limpieza de emojis y caracteres especiales
-- ✅ Normalización de texto (lowercase, acentos)
-- ✅ Eliminación de stopwords en español
-- ✅ Detección y eliminación de anomalías
-- ✅ Filtrado de restaurantes de alta calidad
-- ✅ Balance de clases para entrenamiento
+- Limpieza de emojis y caracteres especiales
+- Normalización de texto (lowercase, acentos)
+- Eliminación de stopwords en español
+- Detección y eliminación de anomalías
+- Filtrado de restaurantes de alta calidad
+- Balance de clases para entrenamiento
 
 ---
 
-## 📊 Pipeline de Machine Learning
+## Pipeline de Machine Learning
 
-### Paso 1: Limpiar Emojis (✅ Completado)
+### Paso 1: Limpiar Emojis ( Completado)
 
-## 📊 MÉTRICAS ESPERADAS DEL MODELO
+## MÉTRICAS ESPERADAS DEL MODELO
 
-### 🎯 Modelo de Sentimientos (Accuracy: ~84%)
+### Modelo de Sentimientos (Accuracy: ~84%)
 
 #### Métricas Generales
 ```
-Accuracy:            84.36%  ✅ (Mínimo: 75%)
-Cohen's Kappa:       56.06%
+Accuracy: 84.36% (Mínimo: 75%)
+Cohen's Kappa: 56.06%
 F1-Score (weighted): 84.64%
-F1-Score (macro):    62.51%
+F1-Score (macro): 62.51%
 ```
 
 #### Métricas por Clase
 
 **POSITIVO** (Comentarios buenos)
 ```
-Precision: 95.8%  ← De las predicciones positivas, 96% son correctas
-Recall:    90.1%  ← Detectamos 90% de los comentarios positivos reales
-F1-Score:  92.9%  ← Balance excelente
+Precision: 95.8% ← De las predicciones positivas, 96% son correctas
+Recall: 90.1% ← Detectamos 90% de los comentarios positivos reales
+F1-Score: 92.9% ← Balance excelente
 ```
 
 **NEGATIVO** (Comentarios malos)
 ```
-Precision: 51.7%  ← De las predicciones negativas, 52% son correctas
-Recall:    87.5%  ← Detectamos 88% de los comentarios negativos reales
-F1-Score:  65.0%  ← Balance aceptable
+Precision: 51.7% ← De las predicciones negativas, 52% son correctas
+Recall: 87.5% ← Detectamos 88% de los comentarios negativos reales
+F1-Score: 65.0% ← Balance aceptable
 ```
 
 **NEUTRO** (Comentarios informativos)
 ```
-Precision: 34.7%  ← Clase más difícil (menos datos)
-Recall:    25.8%  ← Difícil de detectar
-F1-Score:  29.6%  ← Esperado que sea menor
+Precision: 34.7% ← Clase más difícil (menos datos)
+Recall: 25.8% ← Difícil de detectar
+F1-Score: 29.6% ← Esperado que sea menor
 ```
 
 ---
 
-### 🎨 Umbrales de Confianza para UI
+### Umbrales de Confianza para UI
 
 Cuando el modelo hace una predicción, devuelve un % de confianza:
 
-| Confianza | Estado           | Color/Icono | Acción Recomendada        |
+| Confianza | Estado | Color/Icono | Acción Recomendada |
 |-----------|------------------|-------------|---------------------------|
-| ≥ 90%     | MUY CONFIABLE    | ✓✓ Verde    | Mostrar con seguridad     |
-| 80-89%    | CONFIABLE        | ✓ Verde     | Mostrar normalmente       |
-| 70-79%    | MODERADO         | ⚠ Amarillo  | + botón "Revisar"         |
-| 60-69%    | BAJA CONFIANZA   | ? Naranja   | Sugerir revisión          |
-| < 60%     | INDETERMINADO    | ✗ Rojo      | NO mostrar predicción     |
+| ≥ 90% | MUY CONFIABLE | Verde | Mostrar con seguridad |
+| 80-89% | CONFIABLE | Verde | Mostrar normalmente |
+| 70-79% | MODERADO | Amarillo | + botón "Revisar" |
+| 60-69% | BAJA CONFIANZA | ? Naranja | Sugerir revisión |
+| < 60% | INDETERMINADO | Rojo | NO mostrar predicción |
 
 **Ejemplos:**
 ```
-📝 "La comida estuvo deliciosa"
-   → ✓✓ POSITIVO (98.7%) - MUY CONFIABLE
+ "La comida estuvo deliciosa"
+ → POSITIVO (98.7%) - MUY CONFIABLE
 
-📝 "Pésimo servicio, muy lento"
-   → ✓ NEGATIVO (96.9%) - CONFIABLE
+ "Pésimo servicio, muy lento"
+ → NEGATIVO (96.9%) - CONFIABLE
 
-📝 "Comida regular, nada especial"
-   → ⚠ NEUTRO (74.0%) - MODERADO
+ "Comida regular, nada especial"
+ → NEUTRO (74.0%) - MODERADO
 
-📝 "Se atienden todos los domingos"
-   → ✗ REQUIERE REVISIÓN (45.2%) - INDETERMINADO
+ "Se atienden todos los domingos"
+ → REQUIERE REVISIÓN (45.2%) - INDETERMINADO
 ```
 
 ---
@@ -1025,15 +1025,15 @@ python scripts/clean_emojis.py
 **Tipo:** Ensemble Voting Classifier
 - **Complement Naive Bayes** (82.24% accuracy)
 - **Logistic Regression** (83.36% accuracy)
-- **Ensemble** (84.36% accuracy) ✅ Usado en producción
+- **Ensemble** (84.36% accuracy) Usado en producción
 
 **Procesamiento de Texto:**
 - TF-IDF Vectorizer (15,000 términos)
 - Stopwords en español (NLTK)
 - Normalización y limpieza de texto
 
-  - `Lima_Restaurants_2025_08_13_clean.csv` (sin emojis)
-  - `Lima_Restaurants_2025_08_13_backup.csv` (backup)
+ - `Lima_Restaurants_2025_08_13_clean.csv` (sin emojis)
+ - `Lima_Restaurants_2025_08_13_backup.csv` (backup)
 
 ### Paso 2: Pipeline de Limpieza de Datos
 
@@ -1073,7 +1073,7 @@ Entrena y guarda modelos ML en `data/models/`:
 
 ---
 
-## 🌐 Ejecutar el Servidor API
+## Ejecutar el Servidor API
 
 ### Opción 1: Script de Inicio (Recomendado)
 
@@ -1098,25 +1098,25 @@ Una vez iniciado el servidor:
 
 ---
 
-## 📝 Endpoints Principales
+## Endpoints Principales
 
 ### Health Check
 ```http
 GET /api/v1/health
 ```
 
-## 🧹 LIMPIEZA DE ARCHIVOS OBSOLETOS
+## LIMPIEZA DE ARCHIVOS OBSOLETOS
 
 El proyecto tiene **modelos duplicados** que deben eliminarse para mantener una arquitectura limpia.
 
-### 📋 Ver lista completa de archivos a eliminar
+### Ver lista completa de archivos a eliminar
 
 Consulta el archivo `ARCHIVOS_A_ELIMINAR.md` que contiene:
-- ✅ Lista de 6 modelos obsoletos a eliminar
-- ✅ Comandos para PowerShell y CMD
-- ✅ Explicación de qué mantener y qué eliminar
+- Lista de 6 modelos obsoletos a eliminar
+- Comandos para PowerShell y CMD
+- Explicación de qué mantener y qué eliminar
 
-### ⚡ Eliminar Modelos Obsoletos (Rápido)
+### Eliminar Modelos Obsoletos (Rápido)
 
 ```bash
 # PowerShell
@@ -1142,7 +1142,7 @@ del "data\models\sentiment_model_original_20251023_220100.pkl"
 del "data\models\sentiment_vectorizer.pkl"
 ```
 
-**Espacio liberado:** ~4-5 MB  
+**Espacio liberado:** ~4-5 MB 
 **Modelos que quedan:** Solo 4 esenciales (sentiment, clustering, rating, recommender)
 
 ---
@@ -1153,24 +1153,24 @@ POST /api/v1/recommendations
 Content-Type: application/json
 
 {
-  "user_location": {
-    "lat": -12.0464,
-    "lng": -77.0428
-  },
-  "preferences": {
-    "category": "Peruano",
-    "max_distance_km": 5,
-    "min_rating": 4.0
-  },
-  "top_n": 10
+ "user_location": {
+ "lat": -12.0464,
+ "lng": -77.0428
+ },
+ "preferences": {
+ "category": "Peruano",
+ "max_distance_km": 5,
+ "min_rating": 4.0
+ },
+ "top_n": 10
 }
 ```
 
 ---
 
-## 🐛 Solución de Problemas Comunes
+## Solución de Problemas Comunes
 
-### ❌ Error: "No module named 'fastapi'" (o similar)
+### Error: "No module named 'fastapi'" (o similar)
 
 **Causa:** Dependencias no instaladas o entorno virtual no activado.
 
@@ -1180,9 +1180,9 @@ Content-Type: application/json
 # Deberías ver (.venv) al inicio de la línea de comandos
 
 # 2. Si no está activado:
-.venv\Scripts\activate.bat  # CMD
+.venv\Scripts\activate.bat # CMD
 # o
-.venv\Scripts\Activate.ps1  # PowerShell
+.venv\Scripts\Activate.ps1 # PowerShell
 
 # 3. Instalar dependencias
 pip install -r requirements.txt
@@ -1190,7 +1190,7 @@ pip install -r requirements.txt
 
 ---
 
-### ❌ Error: "No se encuentra el archivo sentiment_model.pkl"
+### Error: "No se encuentra el archivo sentiment_model.pkl"
 
 **Causa:** Modelos no entrenados.
 
@@ -1205,7 +1205,7 @@ python scripts/train_models.py
 
 ---
 
-### ❌ Error: "Port 8000 already in use"
+### Error: "Port 8000 already in use"
 
 **Causa:** Puerto 8000 ocupado por otro proceso.
 
@@ -1223,12 +1223,12 @@ python start_server.py
 
 **Alternativa:** Cambiar puerto en `start_server.py` (línea 27):
 ```python
-port=8001,  # Cambiar de 8000 a 8001
+port=8001, # Cambiar de 8000 a 8001
 ```
 
 ---
 
-### ❌ Error: "FileNotFoundError: data/processed/..."
+### Error: "FileNotFoundError: data/processed/..."
 
 **Causa:** Pipeline de datos no ejecutado.
 
@@ -1240,7 +1240,7 @@ python scripts/data_cleaning_pipeline.py
 
 ---
 
-### ❌ Error: NLTK Data not found
+### Error: NLTK Data not found
 
 **Causa:** Recursos de NLTK no descargados.
 
@@ -1251,7 +1251,7 @@ python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk
 
 ---
 
-### ❌ Modelo predice mal ("deliciosa" → neutro)
+### Modelo predice mal ("deliciosa" → neutro)
 
 **Causa:** Modelo desactualizado o no optimizado.
 
@@ -1269,7 +1269,7 @@ python comparar_modelos.py
 
 ---
 
-### ❌ Accuracy bajo (<75%)
+### Accuracy bajo (<75%)
 
 **Causa:** Datos desbalanceados o modelo no optimizado.
 
@@ -1286,40 +1286,40 @@ python reentrenar_modelo_limpio.py
 
 ---
 
-### ❌ PowerShell: "no se puede cargar porque la ejecución de scripts está deshabilitada"
+### PowerShell: "no se puede cargar porque la ejecución de scripts está deshabilitada"
 
 **Causa:** Política de ejecución de PowerShell restrictiva.
 
 **Solución:**
 ```powershell
 # Opción 1: Cambiar política temporalmente
-## 📦 Archivos Esenciales del Proyecto
+## Archivos Esenciales del Proyecto
 
-### 📊 Datos en `data/raw/`
-- ✅ `Lima_Restaurants_2025_08_13_clean.csv` - Dataset limpio (378,969 reviews, 706 restaurantes)
-- ✅ `restaurant_metadata.csv` - Metadatos adicionales
+### Datos en `data/raw/`
+- `Lima_Restaurants_2025_08_13_clean.csv` - Dataset limpio (378,969 reviews, 706 restaurantes)
+- `restaurant_metadata.csv` - Metadatos adicionales
 
-### 🔄 Datos Procesados en `data/processed/`
-- ✅ `restaurantes_limpio.csv` - Restaurantes limpios
-- ✅ `reviews_limpio.csv` - Reviews procesadas
-- ✅ `reviews_con_sentimiento.csv` - Reviews con análisis de sentimiento
+### Datos Procesados en `data/processed/`
+- `restaurantes_limpio.csv` - Restaurantes limpios
+- `reviews_limpio.csv` - Reviews procesadas
+- `reviews_con_sentimiento.csv` - Reviews con análisis de sentimiento
 **Solución:**
-### 🤖 Modelos ML en `data/models/` (Solo los 4 esenciales)
-- ✅ `sentiment_model.pkl` - **Modelo principal** (Ensemble: 84.36% accuracy)
-- ✅ `clustering_model.pkl` - Clustering de restaurantes por características
-- ✅ `rating_predictor.pkl` - Predicción de ratings
-- ✅ `recommender_system.pkl` - Sistema de recomendación completo
+### Modelos ML en `data/models/` (Solo los 4 esenciales)
+- `sentiment_model.pkl` - **Modelo principal** (Ensemble: 84.36% accuracy)
+- `clustering_model.pkl` - Clustering de restaurantes por características
+- `rating_predictor.pkl` - Predicción de ratings
+- `recommender_system.pkl` - Sistema de recomendación completo
 
 > **Nota:** Se eliminaron modelos duplicados y obsoletos para mantener arquitectura limpia.
 Esto genera `Lima_Restaurants_2025_08_13_clean.csv` sin emojis.
 
 ---
 
-## 📦 Archivos Generados
+## Archivos Generados
 
 ### En `data/raw/`
-- ✅ `Lima_Restaurants_2025_08_13_clean.csv` - Dataset sin emojis
-- ✅ `Lima_Restaurants_2025_08_13_backup.csv` - Backup del original
+- `Lima_Restaurants_2025_08_13_clean.csv` - Dataset sin emojis
+- `Lima_Restaurants_2025_08_13_backup.csv` - Backup del original
 
 ### En `data/processed/`
 - `restaurantes_limpio.csv`
@@ -1335,24 +1335,24 @@ Esto genera `Lima_Restaurants_2025_08_13_clean.csv` sin emojis.
 
 ---
 
-## 🎯 Flujo de Trabajo Completo
+## Flujo de Trabajo Completo
 
 ```mermaid
 graph TD
-    A[Dataset Original con Emojis] --> B[clean_emojis.py]
-    B --> C[Dataset Limpio]
-    C --> D[data_cleaning_pipeline.py]
-    D --> E[Datos Procesados]
-    E --> F[train_models.py]
-    F --> G[Modelos ML]
-    G --> H[start_server.py]
-    H --> I[API REST Funcionando]
+ A[Dataset Original con Emojis] --> B[clean_emojis.py]
+ B --> C[Dataset Limpio]
+ C --> D[data_cleaning_pipeline.py]
+ D --> E[Datos Procesados]
+ E --> F[train_models.py]
+ F --> G[Modelos ML]
+ G --> H[start_server.py]
+ H --> I[API REST Funcionando]
 ```
 
 ### Ejecución Paso a Paso
 
 ```bash
-# 1. Limpiar emojis (✅ Ya ejecutado)
+# 1. Limpiar emojis ( Ya ejecutado)
 python scripts/clean_emojis.py
 
 # 2. Procesar datos
@@ -1367,7 +1367,7 @@ python start_server.py
 
 ---
 
-## 🔍 Verificación
+## Verificación
 
 ### Verificar Archivos Limpios
 ```bash
@@ -1376,7 +1376,7 @@ dir data\raw\*.csv
 
 # Deberías ver:
 # - Lima_Restaurants_2025_08_13.csv (original)
-# - Lima_Restaurants_2025_08_13_clean.csv (limpio ✅)
+# - Lima_Restaurants_2025_08_13_clean.csv (limpio )
 # - Lima_Restaurants_2025_08_13_backup.csv (backup)
 ```
 
@@ -1400,7 +1400,7 @@ Invoke-WebRequest -Uri http://localhost:8000 -UseBasicParsing
 
 ---
 
-## 📚 Tecnologías
+## Tecnologías
 
 - **Python 3.14**
 - **FastAPI** - Framework web moderno
@@ -1413,7 +1413,7 @@ Invoke-WebRequest -Uri http://localhost:8000 -UseBasicParsing
 
 ---
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 El proyecto sigue **Clean Architecture** con:
 
@@ -1424,7 +1424,7 @@ El proyecto sigue **Clean Architecture** con:
 
 ---
 
-## 👨‍💻 Desarrollo
+## ‍ Desarrollo
 
 ### Agregar Nueva Funcionalidad
 
@@ -1441,13 +1441,13 @@ pytest test/
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Proyecto académico - UNMSM - Postgrado en Machine Learning
 
 ---
 
-## ✅ Checklist de Estado
+## Checklist de Estado
 
 - [x] Limpieza de emojis completada
 - [x] Pipeline de datos actualizado
@@ -1458,14 +1458,14 @@ Proyecto académico - UNMSM - Postgrado en Machine Learning
 
 ---
 
-## 📞 Contacto
+## Contacto
 
-**UNMSM - Machine Learning**  
+**UNMSM - Machine Learning** 
 Postgrado San Marcos
 
 ---
 
-## 🎉 ¡Siguiente Paso!
+## ¡Siguiente Paso!
 
 Ahora puedes ejecutar el pipeline completo:
 
@@ -1480,5 +1480,5 @@ python scripts/train_models.py
 python start_server.py
 ```
 
-¡El proyecto está listo para funcionar! 🚀
+¡El proyecto está listo para funcionar! 
 

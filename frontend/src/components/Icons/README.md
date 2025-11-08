@@ -5,22 +5,22 @@ El sistema de iconos centralizado en `/src/components/Icons/` proporciona una fo
 
 ## Beneficios
 
-### 🎯 **Organización**
+### **Organización**
 - Todos los iconos en un solo lugar
 - Categorización por familia de iconos
 - Fácil búsqueda y descubrimiento
 
-### 🔧 **Mantenibilidad**
+### **Mantenibilidad**
 - Cambios globales desde un solo archivo
 - Actualizaciones de versiones simplificadas
 - Mejor control de dependencias
 
-### ⚡ **Performance**
+### **Performance**
 - Tree-shaking automático
 - Solo se importan iconos utilizados
 - Bundle size optimizado
 
-### 🎨 **Consistencia**
+### **Consistencia**
 - Tamaños estandarizados
 - Colores predefinidos
 - Propiedades unificadas
@@ -56,35 +56,35 @@ import { MdRestaurant, MdShare, iconSizes } from '../components';
 ### Material Design Icons (MD)
 ```tsx
 import { 
-  MdRestaurant,    // Restaurantes y comida
-  MdLocationOn,    // Ubicación y mapas
-  MdShare,         // Compartir y redes
-  MdRocket,        // Acciones y navegación
-  MdCategory,      // Organización
-  MdStorage,       // Datos y almacenamiento
-  MdSpeed,         // Performance y velocidad
-  MdSchool,        // Educación y academia
+ MdRestaurant, // Restaurantes y comida
+ MdLocationOn, // Ubicación y mapas
+ MdShare, // Compartir y redes
+ MdRocket, // Acciones y navegación
+ MdCategory, // Organización
+ MdStorage, // Datos y almacenamiento
+ MdSpeed, // Performance y velocidad
+ MdSchool, // Educación y academia
 } from '../components/Icons';
 ```
 
 ### Font Awesome Icons (FA)
 ```tsx
 import { 
-  FaBuilding,      // Edificios y estructura
-  FaCopyright,     // Legal y copyright
-  FaUser,          // Usuarios y perfiles
-  FaHeart,         // Emociones y favoritos
-  FaGithub,        // Redes sociales
+ FaBuilding, // Edificios y estructura
+ FaCopyright, // Legal y copyright
+ FaUser, // Usuarios y perfiles
+ FaHeart, // Emociones y favoritos
+ FaGithub, // Redes sociales
 } from '../components/Icons';
 ```
 
 ### Heroicons (HI)
 ```tsx
 import { 
-  HiSparkles,      // Efectos especiales
-  HiLightBulb,     // Ideas e innovación
-  HiChat,          // Comunicación
-  HiThumbUp,       // Feedback y reacciones
+ HiSparkles, // Efectos especiales
+ HiLightBulb, // Ideas e innovación
+ HiChat, // Comunicación
+ HiThumbUp, // Feedback y reacciones
 } from '../components/Icons';
 ```
 
@@ -92,12 +92,12 @@ import {
 
 ```tsx
 export const iconSizes = {
-  xs: '12px',    // Iconos muy pequeños
-  sm: '16px',    // Iconos pequeños en texto
-  md: '20px',    // Tamaño por defecto
-  lg: '24px',    // Iconos destacados
-  xl: '32px',    // Iconos grandes
-  '2xl': '48px', // Iconos muy grandes
+ xs: '12px', // Iconos muy pequeños
+ sm: '16px', // Iconos pequeños en texto
+ md: '20px', // Tamaño por defecto
+ lg: '24px', // Iconos destacados
+ xl: '32px', // Iconos grandes
+ '2xl': '48px', // Iconos muy grandes
 } as const;
 ```
 
@@ -105,13 +105,13 @@ export const iconSizes = {
 
 ```tsx
 export const iconColors = {
-  primary: 'text-blue-600',      // Color principal
-  secondary: 'text-gray-600',    // Color secundario
-  success: 'text-green-600',     // Éxito y confirmación
-  warning: 'text-yellow-600',    // Advertencias
-  error: 'text-red-600',         // Errores
-  white: 'text-white',           // Iconos en fondos oscuros
-  black: 'text-black',           // Iconos en fondos claros
+ primary: 'text-blue-600', // Color principal
+ secondary: 'text-gray-600', // Color secundario
+ success: 'text-green-600', // Éxito y confirmación
+ warning: 'text-yellow-600', // Advertencias
+ error: 'text-red-600', // Errores
+ white: 'text-white', // Iconos en fondos oscuros
+ black: 'text-black', // Iconos en fondos claros
 } as const;
 ```
 
@@ -120,9 +120,9 @@ export const iconColors = {
 ### getIconProps(size, color)
 ```tsx
 // Uso básico
-<MdRestaurant {...getIconProps()} />                    // md, sin color
-<MdRestaurant {...getIconProps('lg')} />                // lg, sin color  
-<MdRestaurant {...getIconProps('sm', 'primary')} />     // sm, azul
+<MdRestaurant {...getIconProps()} /> // md, sin color
+<MdRestaurant {...getIconProps('lg')} /> // lg, sin color 
+<MdRestaurant {...getIconProps('sm', 'primary')} /> // sm, azul
 
 // Equivalente manual
 <MdRestaurant size="16px" className="text-blue-600" />
@@ -134,14 +134,14 @@ export const iconColors = {
 ```tsx
 // Button con icono
 <button className="flex items-center gap-2">
-  <MdRocket {...getIconProps('sm', 'white')} />
-  Buscar Restaurantes
+ <MdRocket {...getIconProps('sm', 'white')} />
+ Buscar Restaurantes
 </button>
 
 // Stats con iconos categorizados
 <div className="stat-item">
-  <MdCategory {...getIconProps('md', 'primary')} />
-  <span>{categoriesCount} Categorías</span>
+ <MdCategory {...getIconProps('md', 'primary')} />
+ <span>{categoriesCount} Categorías</span>
 </div>
 ```
 
@@ -149,16 +149,16 @@ export const iconColors = {
 ```tsx
 // Sidebar navigation
 const navItems = [
-  { icon: MdHome, label: 'Inicio', path: '/' },
-  { icon: MdRestaurant, label: 'Restaurantes', path: '/restaurants' },
-  { icon: MdLocationOn, label: 'Mapa', path: '/map' },
+ { icon: MdHome, label: 'Inicio', path: '/' },
+ { icon: MdRestaurant, label: 'Restaurantes', path: '/restaurants' },
+ { icon: MdLocationOn, label: 'Mapa', path: '/map' },
 ];
 
 {navItems.map(item => (
-  <NavItem key={item.path}>
-    <item.icon {...getIconProps('md', 'secondary')} />
-    {item.label}
-  </NavItem>
+ <NavItem key={item.path}>
+ <item.icon {...getIconProps('md', 'secondary')} />
+ {item.label}
+ </NavItem>
 ))}
 ```
 
@@ -166,9 +166,9 @@ const navItems = [
 ```tsx
 // Social media icons
 <div className="social-links">
-  <FaGithub {...getIconProps('lg')} />
-  <FaLinkedin {...getIconProps('lg')} />
-  <FaTwitter {...getIconProps('lg')} />
+ <FaGithub {...getIconProps('lg')} />
+ <FaLinkedin {...getIconProps('lg')} />
+ <FaTwitter {...getIconProps('lg')} />
 </div>
 
 // Footer stats
@@ -187,9 +187,9 @@ npm install react-icons
 ```tsx
 // En /src/components/Icons/index.ts
 export {
-  // ... iconos existentes
-  NuevoIcono,
-  OtroIconoNuevo,
+ // ... iconos existentes
+ NuevoIcono,
+ OtroIconoNuevo,
 } from 'react-icons/nueva-familia';
 ```
 
@@ -198,13 +198,13 @@ Agregar la nueva categoría a esta documentación con ejemplos de uso.
 
 ## Best Practices
 
-### ✅ **Hacer**
+### **Hacer**
 - Usar iconos del sistema centralizado
 - Aplicar tamaños y colores consistentes
 - Documentar nuevos iconos agregados
 - Usar semantic naming para iconos personalizados
 
-### ❌ **Evitar**
+### **Evitar**
 - Importar directamente desde react-icons
 - Tamaños y colores hardcodeados inconsistentes
 - Duplicar iconos existentes
@@ -212,7 +212,7 @@ Agregar la nueva categoría a esta documentación con ejemplos de uso.
 
 ## Migración desde Iconos Dispersos
 
-### Antes (❌)
+### Antes ()
 ```tsx
 import { MdRestaurant } from 'react-icons/md';
 import { FaBuilding } from 'react-icons/fa';
@@ -221,7 +221,7 @@ import { FaBuilding } from 'react-icons/fa';
 <FaBuilding style={{ fontSize: '20px', color: '#1f2937' }} />
 ```
 
-### Después (✅)
+### Después ()
 ```tsx
 import { MdRestaurant, FaBuilding, getIconProps } from '../components/Icons';
 

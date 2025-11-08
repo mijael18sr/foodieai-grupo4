@@ -93,8 +93,8 @@ Ahora tienes **DOS matrices de confusión diferentes**, cada una con su propósi
 ### Accuracy
 
 ```
-Test Set: [████████████████████░░] 84.36% ← MÁS REALISTA
-Dataset Completo: [█████████████████████░] 85.67% ← MÁS COMPLETO
+Test Set: [] 84.36% ← MÁS REALISTA
+Dataset Completo: [] 85.67% ← MÁS COMPLETO
 ```
 
 ### Tamaño
@@ -193,10 +193,10 @@ Slide 3: [Matriz Completa]
 
 ```
 Diferencia típica aceptable:
-├─ 0-3%: Excelente (bajo overfitting)
-├─ 3-5%: Bueno (overfitting moderado)
-├─ 5-10%: Revisar (posible overfitting)
-└─ >10%: Problema (overfitting severo)
+ 0-3%: Excelente (bajo overfitting)
+ 3-5%: Bueno (overfitting moderado)
+ 5-10%: Revisar (posible overfitting)
+ >10%: Problema (overfitting severo)
 
 Tu modelo: 1.31% → EXCELENTE
 ```
@@ -209,16 +209,16 @@ Tu modelo: 1.31% → EXCELENTE
 
 ```
 docs/figures/
-├─ confusion_matrix_test_set.png (Matriz estándar)
-└─ confusion_matrix_test_set_detailed.png (Heatmap detallado)
+ confusion_matrix_test_set.png (Matriz estándar)
+ confusion_matrix_test_set_detailed.png (Heatmap detallado)
 ```
 
 ### Imágenes del Dataset Completo (85.67%)
 
 ```
 docs/figures/
-├─ confusion_matrix_sentiment.png (Matriz estándar)
-└─ confusion_matrix_detailed.png (Heatmap detallado)
+ confusion_matrix_sentiment.png (Matriz estándar)
+ confusion_matrix_detailed.png (Heatmap detallado)
 ```
 
 ---
@@ -290,20 +290,20 @@ Ahora tienes:
 ## CONCLUSIÓN
 
 ```
-╔═══════════════════════════════════════════════════════╗
-║ ║
-║ AHORA TIENES DOS MATRICES DE CONFUSIÓN: ║
-║ ║
-║ 1️⃣ Test Set (84.36%) ║
-║ → Para documentación técnica (OFICIAL) ║
-║ ║
-║ 2️⃣ Dataset Completo (85.67%) ║
-║ → Para visualización en EDA ║
-║ ║
-║ Ambas son correctas y útiles ║
-║ Usa la apropiada según el contexto ║
-║ ║
-╚═══════════════════════════════════════════════════════╝
+
+
+ AHORA TIENES DOS MATRICES DE CONFUSIÓN: 
+
+ 1⃣ Test Set (84.36%) 
+ → Para documentación técnica (OFICIAL) 
+
+ 2⃣ Dataset Completo (85.67%) 
+ → Para visualización en EDA 
+
+ Ambas son correctas y útiles 
+ Usa la apropiada según el contexto 
+
+
 ```
 
 **TL;DR**:

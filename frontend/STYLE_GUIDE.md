@@ -28,91 +28,91 @@
 
 ```
 src/
-├── components/
-│   ├── ComponentName/
-│   │   ├── ComponentName.tsx
-│   │   └── index.ts
-│   └── index.ts
-├── hooks/
-│   ├── useHookName.ts
-│   └── index.ts
-├── services/
-│   ├── api.ts
-│   └── index.ts
-├── types/
-│   ├── api.ts
-│   └── index.ts
-├── utils/
-│   ├── index.ts
-│   └── helpers.ts
-├── constants/
-│   └── config.ts
-└── pages/
-    ├── PageName/
-    │   ├── PageName.tsx
-    │   └── index.ts
-    └── index.ts
+ components/
+ ComponentName/
+ ComponentName.tsx
+ index.ts
+ index.ts
+ hooks/
+ useHookName.ts
+ index.ts
+ services/
+ api.ts
+ index.ts
+ types/
+ api.ts
+ index.ts
+ utils/
+ index.ts
+ helpers.ts
+ constants/
+ config.ts
+ pages/
+ PageName/
+ PageName.tsx
+ index.ts
+ index.ts
 ```
 
 ## Convenciones de Código
 
 ### React Components
 ```tsx
-// ✅ Correcto
+// Correcto
 export const RestaurantCard = memo(({ restaurant, onSelect }: RestaurantCardProps) => {
-  // Component logic
+ // Component logic
 });
 
-// ❌ Incorrecto
+// Incorrecto
 export default function restaurantCard(props: any) {
-  // Component logic
+ // Component logic
 }
 ```
 
 ### Hooks
 ```tsx
-// ✅ Correcto
+// Correcto
 export function useApiData(): UseApiDataReturn {
-  const [data, setData] = useState<DataType[]>([]);
-  // Hook logic
-  return { data, loading, error };
+ const [data, setData] = useState<DataType[]>([]);
+ // Hook logic
+ return { data, loading, error };
 }
 
-// ❌ Incorrecto
+// Incorrecto
 export const useApiData = () => {
-  // Hook logic without types
+ // Hook logic without types
 }
 ```
 
 ### API Services
 ```tsx
-// ✅ Correcto
+// Correcto
 export class RestaurantApiService {
-  static async getRecommendations(request: RecommendationRequest): Promise<RecommendationResponse> {
-    // Service logic
-  }
+ static async getRecommendations(request: RecommendationRequest): Promise<RecommendationResponse> {
+ // Service logic
+ }
 }
 
-// ❌ Incorrecto
+// Incorrecto
 export const api = {
-  getRecommendations: (data: any) => {
-    // Service logic
-  }
+ getRecommendations: (data: any) => {
+ // Service logic
+ }
 }
 ```
 
 ### Constants
 ```tsx
-// ✅ Correcto
+// Correcto
 export const API_CONFIG = {
-  BASE_URL: 'http://localhost:8000',
-  TIMEOUT: 10000,
+ BASE_URL: 'http://localhost:8000',
+ TIMEOUT: 10000,
 } as const;
 
-// ❌ Incorrecto
+// Incorrecto
 export const apiConfig = {
-  baseUrl: 'http://localhost:8000',
-  timeout: 10000,
+ baseUrl: 'http://localhost:8000',
+ timeout: 10000,
 };
 ```
 
@@ -138,21 +138,21 @@ Ejemplo: `feat: add restaurant recommendation filters`
 
 ### Tipos e Interfaces
 ```tsx
-// ✅ Interfaces para props y objetos
+// Interfaces para props y objetos
 interface RestaurantCardProps {
-  restaurant: Restaurant;
-  onSelect: (id: string) => void;
-  isSelected?: boolean;
+ restaurant: Restaurant;
+ onSelect: (id: string) => void;
+ isSelected?: boolean;
 }
 
-// ✅ Types para uniones y primitivos
+// Types para uniones y primitivos
 type LoadingState = 'idle' | 'loading' | 'success' | 'error';
 type ApiResponse<T> = T | null;
 ```
 
 ### Imports
 ```tsx
-// ✅ Correcto - imports agrupados y ordenados
+// Correcto - imports agrupados y ordenados
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 

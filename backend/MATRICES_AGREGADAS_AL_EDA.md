@@ -30,19 +30,19 @@ Las nuevas celdas se insertaron **después de la celda 79** (Métricas Globales)
 ```
 Estructura del notebook:
 ...
-├─ Celda 79: MÉTRICAS GLOBALES (accuracy, f1-score, etc.)
-├─ [NUEVAS CELDAS AGREGADAS AQUÍ]
-│ ├─ Header: COMPARACIÓN MATRICES
-│ ├─ Explicación de las dos matrices
-│ ├─ Matriz del Test Set (84.36%)
-│ ├─ Visualización Test Set
-│ ├─ Reporte Test Set
-│ ├─ Comparación
-│ ├─ Gráfico comparativo
-│ └─ Conclusiones
-│
-├─ Celda 89: TABLA RESUMEN
-├─ Celda 90: VISUALIZACIÓN 4
+ Celda 79: MÉTRICAS GLOBALES (accuracy, f1-score, etc.)
+ [NUEVAS CELDAS AGREGADAS AQUÍ]
+ Header: COMPARACIÓN MATRICES
+ Explicación de las dos matrices
+ Matriz del Test Set (84.36%)
+ Visualización Test Set
+ Reporte Test Set
+ Comparación
+ Gráfico comparativo
+ Conclusiones
+
+ Celda 89: TABLA RESUMEN
+ Celda 90: VISUALIZACIÓN 4
 ...
 ```
 
@@ -55,12 +55,12 @@ Estructura del notebook:
 ```markdown
 ## Dos Matrices de Confusión Diferentes
 
-1️⃣ Matriz del Test Set (84.36%)
+1⃣ Matriz del Test Set (84.36%)
  - Registros: 39,965 (20%)
  - Datos NO VISTOS
  - Métrica OFICIAL
 
-2️⃣ Matriz del Dataset Completo (85.67%)
+2⃣ Matriz del Dataset Completo (85.67%)
  - Registros: 199,821 (100%)
  - TODOS los datos
  - Visualización EDA
@@ -89,11 +89,11 @@ Estructura del notebook:
 
 ```
  ACCURACY COMPARADO:
- ─────────────────────────────────────────────
- │ Test Set (20%): 84.36% (OFICIAL)
- │ Dataset Completo: 85.67%
- │ Diferencia: +1.31%
- ─────────────────────────────────────────────
+
+ Test Set (20%): 84.36% (OFICIAL)
+ Dataset Completo: 85.67%
+ Diferencia: +1.31%
+
 
  INTERPRETACIÓN:
  Diferencia de 1.31% es EXCELENTE
@@ -151,11 +151,11 @@ Al ejecutar las nuevas celdas, se crearán:
 
 ```
 docs/figures/
-├─ confusion_matrix_test_set.png (84.36%)
-├─ confusion_matrix_test_set_detailed.png
-├─ accuracy_comparison.png NUEVO
-├─ confusion_matrix_sentiment.png (85.67%)
-└─ confusion_matrix_detailed.png
+ confusion_matrix_test_set.png (84.36%)
+ confusion_matrix_test_set_detailed.png
+ accuracy_comparison.png NUEVO
+ confusion_matrix_sentiment.png (85.67%)
+ confusion_matrix_detailed.png
 ```
 
 ---
@@ -198,22 +198,22 @@ Al incluir esta comparación en tu EDA, demuestras:
 ## RESUMEN VISUAL
 
 ```
-┌──────────────────────────────────────────────────────┐
-│ │
-│ ANTES: │
-│ ├─ Solo matriz del dataset completo (85.67%) │
-│ └─ Sin comparación ni contexto │
-│ │
-│ AHORA: │
-│ ├─ Explicación de dos matrices │
-│ ├─ Matriz del Test Set (84.36%) OFICIAL │
-│ ├─ Visualización del Test Set │
-│ ├─ Reporte detallado del Test Set │
-│ ├─ Comparación directa: 84.36% vs 85.67% │
-│ ├─ Gráfico comparativo de accuracies │
-│ └─ Conclusiones e interpretación │
-│ │
-└──────────────────────────────────────────────────────┘
+
+
+ ANTES: 
+ Solo matriz del dataset completo (85.67%) 
+ Sin comparación ni contexto 
+
+ AHORA: 
+ Explicación de dos matrices 
+ Matriz del Test Set (84.36%) OFICIAL 
+ Visualización del Test Set 
+ Reporte detallado del Test Set 
+ Comparación directa: 84.36% vs 85.67% 
+ Gráfico comparativo de accuracies 
+ Conclusiones e interpretación 
+
+
 ```
 
 ---
@@ -238,22 +238,22 @@ Tu notebook EDA ahora tiene:
 
 ```
  Sección Completa de Evaluación:
-├─ Carga del modelo
-├─ Preparación de datos
-├─ Generación de predicciones
-├─ Matriz del Dataset Completo (85.67%)
-├─ Visualizaciones completas
-├─ Reporte de clasificación
-├─ Análisis por clase
-├─ Métricas globales
-└─ [NUEVO] Comparación de Matrices:
- ├─ Explicación pedagógica
- ├─ Matriz Test Set (84.36%)
- ├─ Visualización Test Set
- ├─ Reporte Test Set
- ├─ Comparación directa
- ├─ Gráfico comparativo
- └─ Conclusiones
+ Carga del modelo
+ Preparación de datos
+ Generación de predicciones
+ Matriz del Dataset Completo (85.67%)
+ Visualizaciones completas
+ Reporte de clasificación
+ Análisis por clase
+ Métricas globales
+ [NUEVO] Comparación de Matrices:
+ Explicación pedagógica
+ Matriz Test Set (84.36%)
+ Visualización Test Set
+ Reporte Test Set
+ Comparación directa
+ Gráfico comparativo
+ Conclusiones
 ```
 
 ---
@@ -276,18 +276,18 @@ Puedes usar estas frases en tu documentación:
 ## CONCLUSIÓN
 
 ```
-╔══════════════════════════════════════════════════════╗
-║ ║
-║ SECCIÓN DE MATRICES AGREGADA EXITOSAMENTE ║
-║ ║
-║ Total de celdas: 96 (antes: 87) ║
-║ Celdas agregadas: 9 ║
-║ Posición: Después de Métricas Globales ║
-║ Backup: Creado automáticamente ║
-║ ║
-║ Próximo paso: Ejecutar las celdas en Jupyter ║
-║ ║
-╚══════════════════════════════════════════════════════╝
+
+
+ SECCIÓN DE MATRICES AGREGADA EXITOSAMENTE 
+
+ Total de celdas: 96 (antes: 87) 
+ Celdas agregadas: 9 
+ Posición: Después de Métricas Globales 
+ Backup: Creado automáticamente 
+
+ Próximo paso: Ejecutar las celdas en Jupyter 
+
+
 ```
 
 ---

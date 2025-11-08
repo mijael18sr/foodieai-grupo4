@@ -25,19 +25,19 @@ He convertido los **reportes de clasificación** de texto plano a **imágenes vi
 
 **Contenido**:
 ```
-┌─────────────────────────────────────────────────────────┐
-│ Reporte de Clasificación Completo - Dataset Completo │
-│ Accuracy: 85.67% | 199,821 registros │
-├─────────────────────────────────────────────────────────┤
-│ Clase │ Precision │ Recall │ F1-Score │ Support │
-├───────────┼───────────┼────────┼──────────┼───────────┤
-│ Negativo │ 0.9109 │ 0.9111 │ 0.9110 │ 20,306 │
-│ Neutro │ 0.3224 │ 0.3225 │ 0.3224 │ 17,143 │
-│ Positivo │ 0.9062 │ 0.9063 │ 0.9063 │ 162,372 │
-├───────────┼───────────┼────────┼──────────┼───────────┤
-│ Macro Avg │ 0.7132 │ 0.7133 │ 0.7132 │ 199,821 │
-│Weighted Avg│ 0.8591 │ 0.8567 │ 0.8579 │ 199,821 │
-└─────────────────────────────────────────────────────────┘
+
+ Reporte de Clasificación Completo - Dataset Completo 
+ Accuracy: 85.67% | 199,821 registros 
+
+ Clase Precision Recall F1-Score Support 
+
+ Negativo 0.9109 0.9111 0.9110 20,306 
+ Neutro 0.3224 0.3225 0.3224 17,143 
+ Positivo 0.9062 0.9063 0.9063 162,372 
+
+ Macro Avg 0.7132 0.7133 0.7132 199,821 
+Weighted Avg 0.8591 0.8567 0.8579 199,821 
+
 ```
 
 **Características**:
@@ -56,19 +56,19 @@ He convertido los **reportes de clasificación** de texto plano a **imágenes vi
 
 **Contenido**:
 ```
-┌─────────────────────────────────────────────────────────┐
-│ Reporte de Clasificación - TEST SET (20%) │
-│ Accuracy: 84.36% | 39,965 registros (NO VISTOS) │
-├─────────────────────────────────────────────────────────┤
-│ Clase │ Precision │ Recall │ F1-Score │ Support │
-├───────────┼───────────┼────────┼──────────┼───────────┤
-│ Negativo │ 0.5174 │ 0.8752 │ 0.6503 │ 4,061 │
-│ Neutro │ 0.3467 │ 0.2581 │ 0.2959 │ 3,429 │
-│ Positivo │ 0.9585 │ 0.9014 │ 0.9291 │ 32,475 │
-├───────────┼───────────┼────────┼──────────┼───────────┤
-│ Macro Avg │ 0.6075 │ 0.6782 │ 0.6251 │ 39,965 │
-│Weighted Avg│ 0.8611 │ 0.8436 │ 0.8464 │ 39,965 │
-└─────────────────────────────────────────────────────────┘
+
+ Reporte de Clasificación - TEST SET (20%) 
+ Accuracy: 84.36% | 39,965 registros (NO VISTOS) 
+
+ Clase Precision Recall F1-Score Support 
+
+ Negativo 0.5174 0.8752 0.6503 4,061 
+ Neutro 0.3467 0.2581 0.2959 3,429 
+ Positivo 0.9585 0.9014 0.9291 32,475 
+
+ Macro Avg 0.6075 0.6782 0.6251 39,965 
+Weighted Avg 0.8611 0.8436 0.8464 39,965 
+
 ```
 
 **Características**:
@@ -84,16 +84,16 @@ He convertido los **reportes de clasificación** de texto plano a **imágenes vi
 
 **Contenido**:
 ```
-┌─────────────────────────────────────────────────────────┐
-│ Matriz de Confusión Normalizada (%) - TEST SET (20%) │
-│ Recall por Clase | Accuracy: 84.36% | 39,965 registros │
-├─────────────────────────────────────────────────────────┤
-│ │ Pred: Neg │ Pred: Neu │ Pred: Pos │
-├──────────────┼───────────┼───────────┼─────────────────┤
-│ Real: Neg │ 87.52% │ 7.21% │ 5.27% │
-│ Real: Neu │ 43.42% │ 25.81% │ 30.77% │
-│ Real: Pos │ 5.62% │ 4.23% │ 90.14% │
-└─────────────────────────────────────────────────────────┘
+
+ Matriz de Confusión Normalizada (%) - TEST SET (20%) 
+ Recall por Clase | Accuracy: 84.36% | 39,965 registros 
+
+ Pred: Neg Pred: Neu Pred: Pos 
+
+ Real: Neg 87.52% 7.21% 5.27% 
+ Real: Neu 43.42% 25.81% 30.77% 
+ Real: Pos 5.62% 4.23% 90.14% 
+
 ```
 
 **Características**:
@@ -172,15 +172,15 @@ plt.show()
 
 ```
 docs/figures/
-├─ confusion_matrix_test_set.png
-├─ confusion_matrix_test_set_normalized.png NUEVO
-├─ confusion_matrix_sentiment.png
-├─ confusion_matrix_detailed.png
-├─ confusion_matrix_normalized.png
-├─ accuracy_comparison.png
-├─ classification_report_full.png NUEVO
-├─ classification_report_test.png NUEVO
-└─ metricas_por_clase.png
+ confusion_matrix_test_set.png
+ confusion_matrix_test_set_normalized.png NUEVO
+ confusion_matrix_sentiment.png
+ confusion_matrix_detailed.png
+ confusion_matrix_normalized.png
+ accuracy_comparison.png
+ classification_report_full.png NUEVO
+ classification_report_test.png NUEVO
+ metricas_por_clase.png
 ```
 
 ---
@@ -305,19 +305,19 @@ Puedes usar estas frases:
 ## CONCLUSIÓN
 
 ```
-╔══════════════════════════════════════════════════════╗
-║ ║
-║ REPORTES CONVERTIDOS A IMÁGENES ║
-║ ║
-║ Imágenes generadas: 3 ║
-║ Formato: Tablas visuales con colores ║
-║ Ubicación: docs/figures/ ║
-║ Calidad: 300 DPI (alta resolución) ║
-║ Notebook: Celdas 77 y 84 actualizadas ║
-║ ║
-║ Listo para usar en presentaciones ║
-║ ║
-╚══════════════════════════════════════════════════════╝
+
+
+ REPORTES CONVERTIDOS A IMÁGENES 
+
+ Imágenes generadas: 3 
+ Formato: Tablas visuales con colores 
+ Ubicación: docs/figures/ 
+ Calidad: 300 DPI (alta resolución) 
+ Notebook: Celdas 77 y 84 actualizadas 
+
+ Listo para usar en presentaciones 
+
+
 ```
 
 ---

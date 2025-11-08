@@ -43,28 +43,28 @@ Ver detalles en: `CAMBIO_A_LEFT_JOIN_APLICADO.md`
 
 ```
 PASO 1: Carga de datos raw
-├─ df_reseñas = pd.read_csv('Lima_Restaurants_2025_08_13.csv')
-│ └─ ~378,969 registros (total de reseñas)
-│
-└─ df_restaurantes = pd.read_csv('restaurant_metadata.csv')
- └─ ~706 registros (solo restaurantes de alta calidad)
+ df_reseñas = pd.read_csv('Lima_Restaurants_2025_08_13.csv')
+ ~378,969 registros (total de reseñas)
+
+ df_restaurantes = pd.read_csv('restaurant_metadata.csv')
+ ~706 registros (solo restaurantes de alta calidad)
 
 PASO 2: Merge con INNER JOIN
-├─ df_datafinal = pd.merge(df_reseñas, df_restaurantes, how='inner')
-│ └─ ~27,000 registros
-│ └─ Se pierden ~351,000 registros
-│ └─ RAZÓN: Solo mantiene reseñas de los 706 restaurantes seleccionados
-│
-└─ df_modelo = df_datafinal[[columnas...]]
- └─ ~27,000 registros
+ df_datafinal = pd.merge(df_reseñas, df_restaurantes, how='inner')
+ ~27,000 registros
+ Se pierden ~351,000 registros
+ RAZÓN: Solo mantiene reseñas de los 706 restaurantes seleccionados
+
+ df_modelo = df_datafinal[[columnas...]]
+ ~27,000 registros
 
 PASO 3: Asignación de sentimientos
-└─ df_modelo['sentimiento'] = rating_to_sentiment(rating)
- └─ ~27,000 registros con sentimientos
+ df_modelo['sentimiento'] = rating_to_sentiment(rating)
+ ~27,000 registros con sentimientos
 
 PASO 4: Guardado
-└─ df_modelo.to_csv('modelo_limpio.csv')
- └─ AQUÍ ESTÁ LA CONFUSIÓN
+ df_modelo.to_csv('modelo_limpio.csv')
+ AQUÍ ESTÁ LA CONFUSIÓN
 ```
 
 ---
@@ -87,7 +87,7 @@ print(df_check['sentimiento'].value_counts())
 
 ---
 
-## ❓ ¿POR QUÉ LA CONFUSIÓN?
+## ¿POR QUÉ LA CONFUSIÓN?
 
 El mensaje que mencionaste:
 ```

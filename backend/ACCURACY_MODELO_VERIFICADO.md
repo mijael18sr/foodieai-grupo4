@@ -10,26 +10,26 @@
 
 ### Accuracy en Conjunto de Prueba (Test Set)
 ```
-╔════════════════════════════════════════════════════╗
-║ ║
-║ ACCURACY: 84.36% (0.8436) ║
-║ ║
-║ Evaluado sobre 39,965 registros de prueba ║
-║ (20% del dataset total de 199,821) ║
-║ ║
-╚════════════════════════════════════════════════════╝
+
+
+ ACCURACY: 84.36% (0.8436) 
+
+ Evaluado sobre 39,965 registros de prueba 
+ (20% del dataset total de 199,821) 
+
+
 ```
 
 ### Accuracy en Dataset Completo (Matriz de Confusión)
 ```
-╔════════════════════════════════════════════════════╗
-║ ║
-║ ACCURACY: 85.67% (0.8567) ║
-║ ║
-║ Evaluado sobre 199,821 registros completos ║
-║ (100% del dataset - incluye train + test) ║
-║ ║
-╚════════════════════════════════════════════════════╝
+
+
+ ACCURACY: 85.67% (0.8567) 
+
+ Evaluado sobre 199,821 registros completos 
+ (100% del dataset - incluye train + test) 
+
+
 ```
 
 ** Nota**: La matriz de confusión en el EDA muestra 85.67% porque evalúa sobre TODO el dataset (199,821 registros), mientras que el accuracy del modelo de 84.36% es sobre el conjunto de prueba (20%). Esto es normal y muestra que el modelo generaliza bien.
@@ -55,9 +55,9 @@
 ```
 Total: 199,821 registros
 
-Positivo: 162,372 (81.26%) ████████████████████████████████
-Negativo: 20,306 (10.16%) ████
-Neutro: 17,143 ( 8.58%) ███
+Positivo: 162,372 (81.26%) 
+Negativo: 20,306 (10.16%) 
+Neutro: 17,143 ( 8.58%) 
 ```
 
 ---
@@ -189,12 +189,12 @@ Neutro: 17,143 ( 8.58%) ███
 
 ```
 De cada 100 reseñas:
-├─ 84 son clasificadas CORRECTAMENTE
-└─ 16 son clasificadas INCORRECTAMENTE
+ 84 son clasificadas CORRECTAMENTE
+ 16 son clasificadas INCORRECTAMENTE
 
 De 39,965 reseñas de prueba:
-├─ 33,711 correctas
-└─ 6,254 incorrectas
+ 33,711 correctas
+ 6,254 incorrectas
 ```
 
 ### Matriz de Confusión Resumida
@@ -202,11 +202,11 @@ De 39,965 reseñas de prueba:
 ```
  Predicho
  Neg Neu Pos
- ┌─────────────────────┐
-Real Neg │ 87% 7% 6% │ ← Detecta bien
- Neu │ 45% 26% 29% │ ← Desafiante
- Pos │ 3% 4% 90% │ ← Excelente
- └─────────────────────┘
+
+Real Neg 87% 7% 6% ← Detecta bien
+ Neu 45% 26% 29% ← Desafiante
+ Pos 3% 4% 90% ← Excelente
+
 ```
 
 ---
@@ -266,17 +266,17 @@ def clasificar_con_confianza(texto, modelo):
 ### El modelo tiene un accuracy de **84.36%**
 
 ```
-╔════════════════════════════════════════════════════╗
-║ ║
-║ MODELO APROBADO PARA PRODUCCIÓN ║
-║ ║
-║ • Accuracy: 84.36% (Excelente) ║
-║ • F1-Score: 84.64% (Excelente) ║
-║ • Supera mínimo de 75%: ║
-║ • Estable y consistente: ║
-║ • Listo para usar: ║
-║ ║
-╚════════════════════════════════════════════════════╝
+
+
+ MODELO APROBADO PARA PRODUCCIÓN 
+
+ • Accuracy: 84.36% (Excelente) 
+ • F1-Score: 84.64% (Excelente) 
+ • Supera mínimo de 75%: 
+ • Estable y consistente: 
+ • Listo para usar: 
+
+
 ```
 
 **Recomendación**: El modelo está **LISTO** para ser usado en tu sistema de recomendación de restaurantes. El accuracy de 84.36% es **BUENO** y **CONFIABLE** para este tipo de aplicación.

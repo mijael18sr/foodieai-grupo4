@@ -18,7 +18,7 @@
 
 ## EXPLICACIÓN DETALLADA
 
-### 1️⃣ Accuracy de Entrenamiento: 84.36%
+### 1⃣ Accuracy de Entrenamiento: 84.36%
 
 ```python
 # En reentrenar_modelo_limpio.py
@@ -42,7 +42,7 @@ accuracy = accuracy_score(y_test, y_pred)
 
 ---
 
-### 2️⃣ Accuracy en Dataset Completo: 85.67%
+### 2⃣ Accuracy en Dataset Completo: 85.67%
 
 ```python
 # En el EDA notebook / matriz de confusión
@@ -70,16 +70,16 @@ accuracy = accuracy_score(y_true, y_pred)
 
 ```
 Dataset Completo (199,821):
-├─ 80% TRAIN (159,856) → Modelo los VIO y aprendió
-│ └─ Accuracy aquí: ~86-87% (más alto)
-│
-└─ 20% TEST (39,965) → Modelo NO los vio
- └─ Accuracy aquí: 84.36% (más bajo, pero más realista)
+ 80% TRAIN (159,856) → Modelo los VIO y aprendió
+ Accuracy aquí: ~86-87% (más alto)
+
+ 20% TEST (39,965) → Modelo NO los vio
+ Accuracy aquí: 84.36% (más bajo, pero más realista)
 
 Cuando evalúas TODO el dataset (100%):
-├─ 80% que el modelo ya conoce → predice MUY BIEN
-└─ 20% que el modelo NO conoce → predice BIEN
- └─ Promedio: 85.67% (entre ambos)
+ 80% que el modelo ya conoce → predice MUY BIEN
+ 20% que el modelo NO conoce → predice BIEN
+ Promedio: 85.67% (entre ambos)
 ```
 
 ---
@@ -89,10 +89,10 @@ Cuando evalúas TODO el dataset (100%):
 ### Accuracy por Conjunto
 
 ```
-Test Set (20%): [████████████████████░░] 84.36% ← MÁS REALISTA
+Test Set (20%): [] 84.36% ← MÁS REALISTA
  (datos no vistos)
 
-Dataset Completo: [█████████████████████░] 85.67% ← MÁS OPTIMISTA
+Dataset Completo: [] 85.67% ← MÁS OPTIMISTA
  (incluye train)
 ```
 
@@ -195,17 +195,17 @@ Diferencia: ~2.1%
 ## RESUMEN FINAL
 
 ```
-╔═══════════════════════════════════════════════════════╗
-║ ║
-║ ACCURACY OFICIAL DEL MODELO: 84.36% ║
-║ (Test Set - 20% de datos no vistos) ║
-║ ║
-║ ACCURACY EN MATRIZ DE CONFUSIÓN: 85.67% ║
-║ (Dataset Completo - 100% de datos) ║
-║ ║
-║ DIFERENCIA: ~1.3% (normal y aceptable) ║
-║ ║
-╚═══════════════════════════════════════════════════════╝
+
+
+ ACCURACY OFICIAL DEL MODELO: 84.36% 
+ (Test Set - 20% de datos no vistos) 
+
+ ACCURACY EN MATRIZ DE CONFUSIÓN: 85.67% 
+ (Dataset Completo - 100% de datos) 
+
+ DIFERENCIA: ~1.3% (normal y aceptable) 
+
+
 ```
 
 ### Conclusión
