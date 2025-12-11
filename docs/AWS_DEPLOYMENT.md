@@ -1,67 +1,79 @@
-# =====================================================
-# AWS Deployment Guide
-# =====================================================
+# AWS Deployment Guide - Free Tier
 
-# Restaurant Recommender - AWS Deployment Guide
+Complete guide for deploying the Restaurant Recommender system to AWS using Free Tier resources.
 
-Complete guide for deploying the Restaurant Recommender system to AWS.
-
-## Prerequisites
-
-1. **AWS Account** with appropriate permissions
-2. **AWS CLI** installed and configured
-3. **Docker** installed locally
-4. **Terraform** >= 1.0 (for infrastructure)
-5. **GitHub repository** with secrets configured
-
-## Architecture
+## Architecture (Free Tier Optimized)
 
 ```
 Internet
     │
     ▼
 ┌─────────────────┐
-│   Route 53      │  (Optional: Custom domain)
-│   (DNS)         │
+│   Elastic IP    │  (Free when associated)
+│                 │
 └────────┬────────┘
          │
          ▼
-┌─────────────────┐
-│  Application    │
-│  Load Balancer  │
-│  (ALB)          │
-└────────┬────────┘
+┌─────────────────────────────────────┐
+│       EC2 t2.micro (Free Tier)      │
+│  ┌─────────────────────────────────┐│
+│  │         Docker Compose          ││
+│  │  ┌─────────┐    ┌─────────────┐ ││
+│  │  │Frontend │    │   Backend   │ ││
+│  │  │ (Nginx) │    │  (FastAPI)  │ ││
+│  │  │  :80    │    │   :8000     │ ││
+│  │  └─────────┘    └─────────────┘ ││
+│  └─────────────────────────────────┘│
+└─────────────────────────────────────┘
          │
-    ┌────┴────┐
-    │         │
-    ▼         ▼
-┌───────┐ ┌───────┐
-│Backend│ │Frontend│
-│(ECS)  │ │(ECS)   │
-│Fargate│ │Fargate │
-└───┬───┘ └───────┘
-    │
-    ▼
-┌───────┐
-│ ECR   │  (Container Registry)
-└───────┘
+         ▼
+┌─────────────────┐
+│   ECR (500MB)   │  (Container Registry)
+└─────────────────┘
 ```
 
-## Step 1: Configure GitHub Secrets
+## Free Tier Resources Used
 
-Go to your GitHub repository → Settings → Secrets and variables → Actions
+| Resource | Free Tier Allowance | Usage |
+|----------|---------------------|-------|
+| EC2 t2.micro | 750 hours/month | Main server |
+| EBS gp3 | 30 GB | Storage |
+| Elastic IP | 1 (when associated) | Static IP |
+| ECR | 500 MB | Docker images |
+| Data Transfer | 100 GB outbound | Traffic |
+| CloudWatch | Basic monitoring | Alerts |
 
-Add the following secrets:
+**Estimated Monthly Cost: $0** (within Free Tier limits)
 
-| Secret Name | Description |
-|-------------|-------------|
-| `AWS_ACCESS_KEY_ID` | AWS IAM access key |
-| `AWS_SECRET_ACCESS_KEY` | AWS IAM secret key |
-| `PRODUCTION_API_URL` | Production API URL (e.g., `https://api.yourapp.com`) |
+## Prerequisites
 
-## Step 2: Create AWS Infrastructure
+1. **AWS Account** (Free Tier eligible)
+2. **AWS CLI** installed and configured
+3. **Terraform** >= 1.0
+4. **SSH Key Pair** for EC2 access
 
-### Option A: Using Terraform (Recommended)
+## Step 1: Configure AWS CLI
+
+```bash
+# Configure AWS credentials
+aws configure
+# Enter: AWS Access Key ID, Secret Access Key, Region (us-east-1)
+```
+
+## Step 2: Create SSH Key Pair
+
+```bash
+# Create key pair in AWS
+aws ec2 create-key-pair \
+  --key-name restaurant-recommender-key \
+  --query 'KeyMaterial' \
+  --output text > restaurant-recommender-key.pem
+
+# Set permissions
+chmod 400 restaurant-recommender-key.pem
+```
+
+## Step 3: Deploy Infrastructure with Terraform
 
 ```bash
 # Navigate to infrastructure directory
@@ -71,178 +83,295 @@ cd infrastructure/terraform
 terraform init
 
 # Review the plan
-terraform plan -out=tfplan
+terraform plan
 
-# Apply infrastructure
-terraform apply tfplan
+# Apply infrastructure (type 'yes' to confirm)
+terraform apply
 
-# Get the outputs
-terraform output
+# Save the outputs
+terraform output > deployment-info.txt
 ```
 
-### Option B: Using AWS Console
+### Terraform Outputs
 
-1. **Create ECR Repositories**
-   - Navigate to ECR in AWS Console
-   - Create `restaurant-recommender-backend`
-   - Create `restaurant-recommender-frontend`
+After successful deployment, you'll see:
+- `ec2_public_ip`: Your server IP address
+- `frontend_url`: http://[IP]
+- `backend_url`: http://[IP]:8000
+- `ssh_command`: SSH command to connect
 
-2. **Create ECS Cluster**
-   - Navigate to ECS
-   - Create cluster: `restaurant-recommender-cluster`
-   - Select Fargate as capacity provider
+## Step 4: Configure GitHub Secrets
 
-3. **Create VPC and Networking**
-   - Create VPC with CIDR 10.0.0.0/16
-   - Create public subnets in 2 AZs
-   - Create Internet Gateway
-   - Configure route tables
+Go to GitHub → Repository → Settings → Secrets and variables → Actions
 
-4. **Create Application Load Balancer**
-   - Create ALB in public subnets
-   - Configure listeners (HTTP:80)
-   - Create target groups for backend and frontend
+Add these secrets:
 
-## Step 3: Push Docker Images
+| Secret | Description | Example |
+|--------|-------------|---------|
+| `AWS_ACCESS_KEY_ID` | AWS access key | `AKIA...` |
+| `AWS_SECRET_ACCESS_KEY` | AWS secret key | `wJal...` |
+| `AWS_ACCOUNT_ID` | 12-digit account ID | `123456789012` |
+| `EC2_SSH_PRIVATE_KEY` | Content of .pem file | `-----BEGIN RSA...` |
+| `PRODUCTION_API_URL` | Backend URL | `http://[EC2_IP]:8000` |
 
-### First-time setup:
+### Getting Your AWS Account ID
 
 ```bash
-# Get ECR login
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
-
-# Build and push backend
-cd backend
-docker build -t restaurant-backend .
-docker tag restaurant-backend:latest <account-id>.dkr.ecr.us-east-1.amazonaws.com/restaurant-recommender-backend:latest
-docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/restaurant-recommender-backend:latest
-
-# Build and push frontend
-cd ../frontend
-docker build --build-arg VITE_API_BASE_URL=https://your-alb-url.amazonaws.com -t restaurant-frontend .
-docker tag restaurant-frontend:latest <account-id>.dkr.ecr.us-east-1.amazonaws.com/restaurant-recommender-frontend:latest
-docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/restaurant-recommender-frontend:latest
+aws sts get-caller-identity --query Account --output text
 ```
 
-## Step 4: Configure ECS Services
+### Adding SSH Key to GitHub
 
-### Backend Task Definition
-
-```json
-{
-  "family": "restaurant-backend-task",
-  "networkMode": "awsvpc",
-  "requiresCompatibilities": ["FARGATE"],
-  "cpu": "512",
-  "memory": "1024",
-  "containerDefinitions": [{
-    "name": "backend",
-    "image": "<ecr-url>/restaurant-recommender-backend:latest",
-    "portMappings": [{
-      "containerPort": 8000,
-      "protocol": "tcp"
-    }],
-    "environment": [
-      {"name": "ENVIRONMENT", "value": "production"},
-      {"name": "DEBUG", "value": "false"}
-    ],
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-group": "/ecs/restaurant-backend",
-        "awslogs-region": "us-east-1",
-        "awslogs-stream-prefix": "ecs"
-      }
-    }
-  }]
-}
+```bash
+# Copy the content of your key file
+cat restaurant-recommender-key.pem
+# Paste this entire content into EC2_SSH_PRIVATE_KEY secret
 ```
 
-## Step 5: Automatic Deployment
+## Step 5: Initial Manual Deployment
 
-Once everything is configured, the CI/CD pipeline will automatically:
+For the first deployment, manually set up the EC2 instance:
 
-1. **On Pull Request:**
-   - Run tests (backend + frontend)
-   - Build Docker images (validation only)
+```bash
+# SSH into EC2
+ssh -i restaurant-recommender-key.pem ec2-user@[EC2_IP]
 
-2. **On Push to main:**
-   - Run tests
-   - Build and push Docker images to ECR
-   - Update ECS task definitions
-   - Deploy to ECS services
+# Create app directory
+mkdir -p /home/ec2-user/app
+cd /home/ec2-user/app
 
-## Monitoring
+# Create docker-compose.yml
+cat > docker-compose.yml << 'EOF'
+version: '3.8'
 
-### CloudWatch Logs
+services:
+  backend:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/restaurant-recommender-backend:latest
+    container_name: restaurant-backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=info
+      - CORS_ORIGINS=*
+    volumes:
+      - backend-data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  
+  frontend:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/restaurant-recommender-frontend:latest
+    container_name: restaurant-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 
-View logs in AWS Console:
-- Backend: `/ecs/restaurant-recommender/backend`
-- Frontend: `/ecs/restaurant-recommender/frontend`
+volumes:
+  backend-data:
+EOF
 
-### Health Checks
+# Create .env file
+echo "AWS_ACCOUNT_ID=[YOUR_ACCOUNT_ID]" > .env
 
-- Backend: `http://<alb-url>/health`
-- Frontend: `http://<alb-url>/`
-- API Docs: `http://<alb-url>/docs`
+# Login to ECR (first time)
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin [ACCOUNT_ID].dkr.ecr.us-east-1.amazonaws.com
 
-## Cost Optimization
+# Pull and start
+docker-compose pull
+docker-compose up -d
+```
 
-### Development/Testing
-- Use Fargate Spot for non-production
-- Scale down to 0 during non-business hours
+## Step 6: Automatic Deployments (CI/CD)
 
-### Production
-- Use reserved capacity for consistent workloads
-- Enable auto-scaling based on CPU/memory
+After the initial setup, every push to `main` branch will:
+
+1. Run tests (backend + frontend)
+2. Build Docker images
+3. Push to ECR
+4. SSH into EC2 and deploy
+
+### Manually Trigger Deployment
+
+```bash
+# From your local machine
+git push origin main
+# The GitHub Action will automatically deploy
+```
+
+### Manual Deployment Script (on EC2)
+
+```bash
+# SSH into EC2
+ssh -i restaurant-recommender-key.pem ec2-user@[EC2_IP]
+
+# Run deploy script
+cd /home/ec2-user/app
+./deploy.sh
+```
+
+## Monitoring & Management
+
+### View Container Logs
+
+```bash
+# SSH into EC2
+ssh -i restaurant-recommender-key.pem ec2-user@[EC2_IP]
+
+# View all logs
+docker-compose logs
+
+# View specific service
+docker-compose logs backend
+docker-compose logs frontend
+
+# Follow logs in real-time
+docker-compose logs -f
+```
+
+### Restart Services
+
+```bash
+# Restart all
+docker-compose restart
+
+# Restart specific service
+docker-compose restart backend
+```
+
+### Check Container Status
+
+```bash
+docker-compose ps
+docker stats
+```
+
+### Update Application
+
+```bash
+# Pull latest images
+docker-compose pull
+
+# Restart with new images
+docker-compose down
+docker-compose up -d
+```
 
 ## Troubleshooting
 
-### Common Issues
-
-1. **ECS Task fails to start**
-   - Check CloudWatch logs
-   - Verify ECR image exists
-   - Check task role permissions
-
-2. **Health checks failing**
-   - Verify security group rules
-   - Check container port mappings
-   - Ensure health endpoint returns 200
-
-3. **Cannot pull image from ECR**
-   - Verify task execution role has ECR permissions
-   - Check ECR repository exists
-   - Verify image tag
-
-### Useful Commands
+### Cannot SSH into EC2
 
 ```bash
-# View ECS service events
-aws ecs describe-services --cluster restaurant-recommender-cluster --services restaurant-backend-service
+# Check security group allows SSH (port 22)
+aws ec2 describe-security-groups --group-names restaurant-recommender-app-sg
 
-# View running tasks
-aws ecs list-tasks --cluster restaurant-recommender-cluster
-
-# View task logs
-aws logs tail /ecs/restaurant-recommender/backend --follow
-
-# Force new deployment
-aws ecs update-service --cluster restaurant-recommender-cluster --service restaurant-backend-service --force-new-deployment
+# Check instance is running
+aws ec2 describe-instances --filters "Name=tag:Name,Values=restaurant-recommender-app-server"
 ```
+
+### Docker Not Working
+
+```bash
+# Check Docker service
+sudo systemctl status docker
+
+# Restart Docker
+sudo systemctl restart docker
+
+# Check Docker permissions
+sudo usermod -aG docker ec2-user
+# Log out and log back in
+```
+
+### ECR Login Issues
+
+```bash
+# Manual ECR login
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin [ACCOUNT_ID].dkr.ecr.us-east-1.amazonaws.com
+```
+
+### Out of Disk Space
+
+```bash
+# Check disk usage
+df -h
+
+# Clean Docker resources
+docker system prune -a
+```
+
+## Cost Optimization Tips
+
+1. **Stop EC2 when not in use**: If for development only
+   ```bash
+   aws ec2 stop-instances --instance-ids [INSTANCE_ID]
+   ```
+
+2. **Keep ECR images minimal**: Lifecycle policy keeps only 5 images
+
+3. **Monitor usage**: Check AWS Cost Explorer weekly
+
+4. **Stay within Free Tier**:
+   - EC2: Don't run more than 750 hours/month
+   - EBS: Keep storage under 30 GB
+   - Data transfer: Under 100 GB outbound
+
+## Destroy Infrastructure
+
+When you no longer need the infrastructure:
+
+```bash
+cd infrastructure/terraform
+terraform destroy
+```
+
+**Warning**: This will delete all resources including data!
 
 ## Security Best Practices
 
-1. **Use IAM roles** instead of access keys where possible
-2. **Enable ECR image scanning** for vulnerabilities
-3. **Use Secrets Manager** for sensitive configuration
-4. **Enable VPC Flow Logs** for network monitoring
-5. **Configure WAF** for application protection
+1. **Restrict SSH access**: Update `allowed_ssh_cidr` variable
+2. **Use HTTPS**: Add SSL certificate (beyond Free Tier)
+3. **Rotate credentials**: Update AWS keys periodically
+4. **Enable MFA**: On AWS account
 
-## Next Steps
+## Next Steps (Beyond Free Tier)
 
-1. Configure custom domain with Route 53
-2. Add SSL/TLS certificate with ACM
-3. Set up auto-scaling policies
-4. Configure backup and disaster recovery
-5. Implement blue/green deployments
+When ready to scale:
+
+1. **Add HTTPS**: Use AWS Certificate Manager + ALB
+2. **Custom Domain**: Configure Route 53
+3. **Auto Scaling**: Move to ECS Fargate
+4. **Database**: Add RDS for persistent data
+5. **CDN**: Add CloudFront for frontend
+
+## Quick Reference
+
+```bash
+# SSH into server
+ssh -i restaurant-recommender-key.pem ec2-user@[EC2_IP]
+
+# View logs
+docker-compose logs -f
+
+# Restart services
+docker-compose restart
+
+# Manual deploy
+docker-compose pull && docker-compose up -d
+
+# Check status
+docker-compose ps
+```
+
+## Support
+
+For issues:
+1. Check container logs
+2. Verify GitHub Action logs
+3. Check AWS CloudWatch
+4. Open GitHub issue

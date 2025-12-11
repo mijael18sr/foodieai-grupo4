@@ -1,10 +1,10 @@
-# =====================================================
-# Restaurant Recommender - AWS Infrastructure (Terraform)
-# =====================================================
-# Main configuration file for AWS resources
+# =============================================================================
+# TERRAFORM - AWS Free Tier Infrastructure for Restaurant Recommender
+# Architecture: EC2 t2.micro + Docker Compose (Free Tier Compatible)
+# =============================================================================
 
 terraform {
-  required_version = ">= 1.0"
+  required_version = ">= 1.0.0"
   
   required_providers {
     aws = {
@@ -13,31 +13,17 @@ terraform {
     }
   }
   
-  # Uncomment to use S3 backend for state management
+  # Optional: S3 backend for state
   # backend "s3" {
-  #   bucket         = "restaurant-recommender-terraform-state"
-  #   key            = "production/terraform.tfstate"
-  #   region         = "us-east-1"
-  #   encrypt        = true
-  #   dynamodb_table = "terraform-state-lock"
+  #   bucket = "your-terraform-state-bucket"
+  #   key    = "restaurant-recommender/terraform.tfstate"
+  #   region = "us-east-1"
   # }
 }
 
-provider "aws" {
-  region = var.aws_region
-  
-  default_tags {
-    tags = {
-      Project     = "restaurant-recommender"
-      Environment = var.environment
-      ManagedBy   = "terraform"
-    }
-  }
-}
-
-# ===========================================
-# Variables
-# ===========================================
+# =============================================================================
+# VARIABLES
+# =============================================================================
 
 variable "aws_region" {
   description = "AWS region"
@@ -45,45 +31,80 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "environment" {
-  description = "Environment name"
-  type        = string
-  default     = "production"
-}
-
 variable "project_name" {
-  description = "Project name"
+  description = "Project name for resource naming"
   type        = string
   default     = "restaurant-recommender"
 }
 
-variable "backend_cpu" {
-  description = "Backend container CPU units"
-  type        = number
-  default     = 512
+variable "environment" {
+  description = "Environment (dev, staging, prod)"
+  type        = string
+  default     = "prod"
 }
 
-variable "backend_memory" {
-  description = "Backend container memory (MB)"
-  type        = number
-  default     = 1024
+variable "instance_type" {
+  description = "EC2 instance type (t2.micro for Free Tier)"
+  type        = string
+  default     = "t2.micro"
 }
 
-variable "frontend_cpu" {
-  description = "Frontend container CPU units"
-  type        = number
-  default     = 256
+variable "key_pair_name" {
+  description = "Name of the SSH key pair"
+  type        = string
+  default     = "restaurant-recommender-key"
 }
 
-variable "frontend_memory" {
-  description = "Frontend container memory (MB)"
-  type        = number
-  default     = 512
+variable "allowed_ssh_cidr" {
+  description = "CIDR block allowed for SSH access"
+  type        = string
+  default     = "0.0.0.0/0"  # Restrict in production
 }
 
-# ===========================================
-# VPC and Networking
-# ===========================================
+# =============================================================================
+# PROVIDER
+# =============================================================================
+
+provider "aws" {
+  region = var.aws_region
+  
+  default_tags {
+    tags = {
+      Project     = var.project_name
+      Environment = var.environment
+      ManagedBy   = "Terraform"
+    }
+  }
+}
+
+# =============================================================================
+# DATA SOURCES
+# =============================================================================
+
+# Get latest Amazon Linux 2023 AMI (Free Tier eligible)
+data "aws_ami" "amazon_linux_2023" {
+  most_recent = true
+  owners      = ["amazon"]
+  
+  filter {
+    name   = "name"
+    values = ["al2023-ami-*-x86_64"]
+  }
+  
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+# Get available AZs
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+# =============================================================================
+# NETWORKING (VPC - Free)
+# =============================================================================
 
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
@@ -95,29 +116,19 @@ resource "aws_vpc" "main" {
   }
 }
 
+# Public Subnet (only public - no NAT Gateway to save costs)
 resource "aws_subnet" "public" {
-  count                   = 2
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.${count.index + 1}.0/24"
-  availability_zone       = data.aws_availability_zones.available.names[count.index]
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = data.aws_availability_zones.available.names[0]
   map_public_ip_on_launch = true
   
   tags = {
-    Name = "${var.project_name}-public-subnet-${count.index + 1}"
+    Name = "${var.project_name}-public-subnet"
   }
 }
 
-resource "aws_subnet" "private" {
-  count             = 2
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.${count.index + 10}.0/24"
-  availability_zone = data.aws_availability_zones.available.names[count.index]
-  
-  tags = {
-    Name = "${var.project_name}-private-subnet-${count.index + 1}"
-  }
-}
-
+# Internet Gateway
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
   
@@ -126,6 +137,7 @@ resource "aws_internet_gateway" "main" {
   }
 }
 
+# Route Table
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
   
@@ -139,61 +151,67 @@ resource "aws_route_table" "public" {
   }
 }
 
+# Route Table Association
 resource "aws_route_table_association" "public" {
-  count          = 2
-  subnet_id      = aws_subnet.public[count.index].id
+  subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
 
-data "aws_availability_zones" "available" {
-  state = "available"
-}
+# =============================================================================
+# SECURITY GROUPS
+# =============================================================================
 
-# ===========================================
-# Security Groups
-# ===========================================
-
-resource "aws_security_group" "alb" {
-  name_prefix = "${var.project_name}-alb-"
+resource "aws_security_group" "app" {
+  name        = "${var.project_name}-app-sg"
+  description = "Security group for application server"
   vpc_id      = aws_vpc.main.id
   
+  # SSH access
   ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.allowed_ssh_cidr]
+  }
+  
+  # HTTP access (Frontend)
+  ingress {
+    description = "HTTP"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
   
+  # HTTPS access
   ingress {
+    description = "HTTPS"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
   
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  
-  tags = {
-    Name = "${var.project_name}-alb-sg"
-  }
-}
-
-resource "aws_security_group" "ecs" {
-  name_prefix = "${var.project_name}-ecs-"
-  vpc_id      = aws_vpc.main.id
-  
+  # Backend API
   ingress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    security_groups = [aws_security_group.alb.id]
+    description = "Backend API"
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
   
+  # MLflow UI (optional - restrict in production)
+  ingress {
+    description = "MLflow"
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = [var.allowed_ssh_cidr]
+  }
+  
+  # Outbound traffic
   egress {
     from_port   = 0
     to_port     = 0
@@ -202,13 +220,175 @@ resource "aws_security_group" "ecs" {
   }
   
   tags = {
-    Name = "${var.project_name}-ecs-sg"
+    Name = "${var.project_name}-app-sg"
   }
 }
 
-# ===========================================
-# ECR Repositories
-# ===========================================
+# =============================================================================
+# IAM ROLE FOR EC2 (ECR Access)
+# =============================================================================
+
+resource "aws_iam_role" "ec2_role" {
+  name = "${var.project_name}-ec2-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# Policy for ECR access
+resource "aws_iam_role_policy" "ecr_policy" {
+  name = "${var.project_name}-ecr-policy"
+  role = aws_iam_role.ec2_role.id
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:DescribeRepositories",
+          "ecr:ListImages"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "${var.project_name}-ec2-profile"
+  role = aws_iam_role.ec2_role.name
+}
+
+# =============================================================================
+# EC2 INSTANCE (t2.micro - Free Tier)
+# =============================================================================
+
+resource "aws_instance" "app" {
+  ami                    = data.aws_ami.amazon_linux_2023.id
+  instance_type          = var.instance_type
+  key_name               = var.key_pair_name
+  subnet_id              = aws_subnet.public.id
+  vpc_security_group_ids = [aws_security_group.app.id]
+  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
+  
+  # Free Tier: 30 GB EBS storage
+  root_block_device {
+    volume_type           = "gp3"
+    volume_size           = 30
+    delete_on_termination = true
+    encrypted             = true
+  }
+  
+  # User data script to install Docker
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    set -e
+    
+    # Update system
+    dnf update -y
+    
+    # Install Docker
+    dnf install -y docker
+    systemctl start docker
+    systemctl enable docker
+    
+    # Install Docker Compose
+    curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+    
+    # Add ec2-user to docker group
+    usermod -aG docker ec2-user
+    
+    # Install Git
+    dnf install -y git
+    
+    # Create app directory
+    mkdir -p /home/ec2-user/app
+    chown ec2-user:ec2-user /home/ec2-user/app
+    
+    # Configure Docker to start on boot
+    systemctl enable docker
+    
+    # Configure AWS CLI for ECR login
+    cat > /home/ec2-user/deploy.sh << 'DEPLOY'
+    #!/bin/bash
+    set -e
+    
+    AWS_REGION="${aws_region}"
+    AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+    ECR_REGISTRY="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
+    
+    # Login to ECR
+    aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+    
+    # Navigate to app directory
+    cd /home/ec2-user/app
+    
+    # Pull latest images
+    docker-compose pull
+    
+    # Restart services
+    docker-compose down
+    docker-compose up -d
+    
+    # Cleanup old images
+    docker image prune -f
+    
+    echo "Deployment complete!"
+    DEPLOY
+    
+    chmod +x /home/ec2-user/deploy.sh
+    chown ec2-user:ec2-user /home/ec2-user/deploy.sh
+    
+    echo "EC2 instance setup complete!"
+  EOF
+  )
+  
+  tags = {
+    Name = "${var.project_name}-app-server"
+  }
+}
+
+# =============================================================================
+# ELASTIC IP (Free Tier: 1 EIP associated with running instance)
+# =============================================================================
+
+resource "aws_eip" "app" {
+  instance = aws_instance.app.id
+  domain   = "vpc"
+  
+  tags = {
+    Name = "${var.project_name}-eip"
+  }
+}
+
+# =============================================================================
+# ECR REPOSITORIES (Free Tier: 500 MB storage)
+# =============================================================================
 
 resource "aws_ecr_repository" "backend" {
   name                 = "${var.project_name}-backend"
@@ -216,6 +396,11 @@ resource "aws_ecr_repository" "backend" {
   
   image_scanning_configuration {
     scan_on_push = true
+  }
+  
+  # Lifecycle policy to keep costs down
+  lifecycle {
+    prevent_destroy = false
   }
   
   tags = {
@@ -236,23 +421,25 @@ resource "aws_ecr_repository" "frontend" {
   }
 }
 
-# ECR Lifecycle Policy
+# ECR Lifecycle Policy - Keep only last 5 images to save storage
 resource "aws_ecr_lifecycle_policy" "backend" {
   repository = aws_ecr_repository.backend.name
   
   policy = jsonencode({
-    rules = [{
-      rulePriority = 1
-      description  = "Keep last 10 images"
-      selection = {
-        tagStatus   = "any"
-        countType   = "imageCountMoreThan"
-        countNumber = 10
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Keep last 5 images"
+        selection = {
+          tagStatus   = "any"
+          countType   = "imageCountMoreThan"
+          countNumber = 5
+        }
+        action = {
+          type = "expire"
+        }
       }
-      action = {
-        type = "expire"
-      }
-    }]
+    ]
   })
 }
 
@@ -260,330 +447,69 @@ resource "aws_ecr_lifecycle_policy" "frontend" {
   repository = aws_ecr_repository.frontend.name
   
   policy = jsonencode({
-    rules = [{
-      rulePriority = 1
-      description  = "Keep last 10 images"
-      selection = {
-        tagStatus   = "any"
-        countType   = "imageCountMoreThan"
-        countNumber = 10
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Keep last 5 images"
+        selection = {
+          tagStatus   = "any"
+          countType   = "imageCountMoreThan"
+          countNumber = 5
+        }
+        action = {
+          type = "expire"
+        }
       }
-      action = {
-        type = "expire"
-      }
-    }]
-  })
-}
-
-# ===========================================
-# ECS Cluster
-# ===========================================
-
-resource "aws_ecs_cluster" "main" {
-  name = "${var.project_name}-cluster"
-  
-  setting {
-    name  = "containerInsights"
-    value = "enabled"
-  }
-  
-  tags = {
-    Name = "${var.project_name}-cluster"
-  }
-}
-
-resource "aws_ecs_cluster_capacity_providers" "main" {
-  cluster_name = aws_ecs_cluster.main.name
-  
-  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
-  
-  default_capacity_provider_strategy {
-    base              = 1
-    weight            = 100
-    capacity_provider = "FARGATE"
-  }
-}
-
-# ===========================================
-# IAM Roles
-# ===========================================
-
-resource "aws_iam_role" "ecs_task_execution" {
-  name = "${var.project_name}-ecs-task-execution"
-  
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "ecs-tasks.amazonaws.com"
-      }
-    }]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
-  role       = aws_iam_role.ecs_task_execution.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-resource "aws_iam_role" "ecs_task" {
-  name = "${var.project_name}-ecs-task"
-  
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "ecs-tasks.amazonaws.com"
-      }
-    }]
-  })
-}
-
-# ===========================================
-# CloudWatch Log Groups
-# ===========================================
-
-resource "aws_cloudwatch_log_group" "backend" {
-  name              = "/ecs/${var.project_name}/backend"
-  retention_in_days = 30
-}
-
-resource "aws_cloudwatch_log_group" "frontend" {
-  name              = "/ecs/${var.project_name}/frontend"
-  retention_in_days = 30
-}
-
-# ===========================================
-# Application Load Balancer
-# ===========================================
-
-resource "aws_lb" "main" {
-  name               = "${var.project_name}-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb.id]
-  subnets            = aws_subnet.public[*].id
-  
-  enable_deletion_protection = false
-  
-  tags = {
-    Name = "${var.project_name}-alb"
-  }
-}
-
-resource "aws_lb_target_group" "backend" {
-  name        = "${var.project_name}-backend-tg"
-  port        = 8000
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.main.id
-  target_type = "ip"
-  
-  health_check {
-    enabled             = true
-    healthy_threshold   = 2
-    interval            = 30
-    matcher             = "200"
-    path                = "/health"
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 5
-    unhealthy_threshold = 3
-  }
-}
-
-resource "aws_lb_target_group" "frontend" {
-  name        = "${var.project_name}-frontend-tg"
-  port        = 80
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.main.id
-  target_type = "ip"
-  
-  health_check {
-    enabled             = true
-    healthy_threshold   = 2
-    interval            = 30
-    matcher             = "200"
-    path                = "/health"
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 5
-    unhealthy_threshold = 3
-  }
-}
-
-resource "aws_lb_listener" "http" {
-  load_balancer_arn = aws_lb.main.arn
-  port              = 80
-  protocol          = "HTTP"
-  
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.frontend.arn
-  }
-}
-
-resource "aws_lb_listener_rule" "api" {
-  listener_arn = aws_lb_listener.http.arn
-  priority     = 100
-  
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.backend.arn
-  }
-  
-  condition {
-    path_pattern {
-      values = ["/api/*", "/docs", "/redoc", "/health"]
-    }
-  }
-}
-
-# ===========================================
-# ECS Task Definitions
-# ===========================================
-
-resource "aws_ecs_task_definition" "backend" {
-  family                   = "${var.project_name}-backend"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = var.backend_cpu
-  memory                   = var.backend_memory
-  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
-  task_role_arn            = aws_iam_role.ecs_task.arn
-  
-  container_definitions = jsonencode([{
-    name  = "backend"
-    image = "${aws_ecr_repository.backend.repository_url}:latest"
-    
-    portMappings = [{
-      containerPort = 8000
-      hostPort      = 8000
-      protocol      = "tcp"
-    }]
-    
-    environment = [
-      { name = "API_HOST", value = "0.0.0.0" },
-      { name = "API_PORT", value = "8000" },
-      { name = "ENVIRONMENT", value = var.environment },
-      { name = "DEBUG", value = "false" }
     ]
-    
-    logConfiguration = {
-      logDriver = "awslogs"
-      options = {
-        awslogs-group         = aws_cloudwatch_log_group.backend.name
-        awslogs-region        = var.aws_region
-        awslogs-stream-prefix = "ecs"
-      }
-    }
-    
-    healthCheck = {
-      command     = ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\" || exit 1"]
-      interval    = 30
-      timeout     = 5
-      retries     = 3
-      startPeriod = 60
-    }
-  }])
+  })
 }
 
-resource "aws_ecs_task_definition" "frontend" {
-  family                   = "${var.project_name}-frontend"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = var.frontend_cpu
-  memory                   = var.frontend_memory
-  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
-  task_role_arn            = aws_iam_role.ecs_task.arn
+# =============================================================================
+# CLOUDWATCH (Free Tier: Basic monitoring)
+# =============================================================================
+
+resource "aws_cloudwatch_metric_alarm" "cpu_high" {
+  alarm_name          = "${var.project_name}-cpu-high"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = 300
+  statistic           = "Average"
+  threshold           = 80
+  alarm_description   = "CPU utilization is too high"
   
-  container_definitions = jsonencode([{
-    name  = "frontend"
-    image = "${aws_ecr_repository.frontend.repository_url}:latest"
-    
-    portMappings = [{
-      containerPort = 80
-      hostPort      = 80
-      protocol      = "tcp"
-    }]
-    
-    logConfiguration = {
-      logDriver = "awslogs"
-      options = {
-        awslogs-group         = aws_cloudwatch_log_group.frontend.name
-        awslogs-region        = var.aws_region
-        awslogs-stream-prefix = "ecs"
-      }
-    }
-    
-    healthCheck = {
-      command     = ["CMD-SHELL", "curl -f http://localhost:80/health || exit 1"]
-      interval    = 30
-      timeout     = 5
-      retries     = 3
-      startPeriod = 30
-    }
-  }])
+  dimensions = {
+    InstanceId = aws_instance.app.id
+  }
+  
+  tags = {
+    Name = "${var.project_name}-cpu-alarm"
+  }
 }
 
-# ===========================================
-# ECS Services
-# ===========================================
+# =============================================================================
+# OUTPUTS
+# =============================================================================
 
-resource "aws_ecs_service" "backend" {
-  name            = "${var.project_name}-backend-service"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.backend.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
-  
-  network_configuration {
-    subnets          = aws_subnet.public[*].id
-    security_groups  = [aws_security_group.ecs.id]
-    assign_public_ip = true
-  }
-  
-  load_balancer {
-    target_group_arn = aws_lb_target_group.backend.arn
-    container_name   = "backend"
-    container_port   = 8000
-  }
-  
-  depends_on = [aws_lb_listener.http]
+output "ec2_public_ip" {
+  description = "Public IP of the EC2 instance"
+  value       = aws_eip.app.public_ip
 }
 
-resource "aws_ecs_service" "frontend" {
-  name            = "${var.project_name}-frontend-service"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.frontend.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
-  
-  network_configuration {
-    subnets          = aws_subnet.public[*].id
-    security_groups  = [aws_security_group.ecs.id]
-    assign_public_ip = true
-  }
-  
-  load_balancer {
-    target_group_arn = aws_lb_target_group.frontend.arn
-    container_name   = "frontend"
-    container_port   = 80
-  }
-  
-  depends_on = [aws_lb_listener.http]
+output "ec2_public_dns" {
+  description = "Public DNS of the EC2 instance"
+  value       = aws_instance.app.public_dns
 }
 
-# ===========================================
-# Outputs
-# ===========================================
+output "frontend_url" {
+  description = "Frontend URL"
+  value       = "http://${aws_eip.app.public_ip}"
+}
 
-output "alb_dns_name" {
-  description = "DNS name of the Application Load Balancer"
-  value       = aws_lb.main.dns_name
+output "backend_url" {
+  description = "Backend API URL"
+  value       = "http://${aws_eip.app.public_ip}:8000"
 }
 
 output "ecr_backend_url" {
@@ -596,12 +522,28 @@ output "ecr_frontend_url" {
   value       = aws_ecr_repository.frontend.repository_url
 }
 
-output "ecs_cluster_name" {
-  description = "Name of the ECS cluster"
-  value       = aws_ecs_cluster.main.name
+output "ssh_command" {
+  description = "SSH command to connect to EC2"
+  value       = "ssh -i ${var.key_pair_name}.pem ec2-user@${aws_eip.app.public_ip}"
 }
 
-output "vpc_id" {
-  description = "VPC ID"
-  value       = aws_vpc.main.id
+output "deploy_command" {
+  description = "Command to trigger deployment on EC2"
+  value       = "ssh -i ${var.key_pair_name}.pem ec2-user@${aws_eip.app.public_ip} '/home/ec2-user/deploy.sh'"
 }
+
+# =============================================================================
+# FREE TIER COST SUMMARY:
+# -----------------------------------------------------------------------------
+# Resource              | Free Tier Allowance      | Expected Cost
+# -----------------------------------------------------------------------------
+# EC2 t2.micro         | 750 hours/month          | $0 (within limit)
+# EBS gp3 30GB         | 30 GB/month              | $0 (within limit)
+# Elastic IP           | 1 EIP (when associated)  | $0 (associated)
+# ECR                  | 500 MB storage           | $0 (within limit)
+# CloudWatch           | Basic monitoring FREE    | $0
+# VPC/Subnet/IGW       | Always FREE              | $0
+# Data Transfer        | 100 GB/month outbound    | $0 (within limit)
+# -----------------------------------------------------------------------------
+# ESTIMATED MONTHLY COST: $0 (within Free Tier limits)
+# =============================================================================
