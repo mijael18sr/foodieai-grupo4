@@ -136,7 +136,7 @@ export const Sidebar = memo(function Sidebar({
           onClick={onToggle}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
-              onToggle();
+              onToggle?.();
             }
           }}
         />

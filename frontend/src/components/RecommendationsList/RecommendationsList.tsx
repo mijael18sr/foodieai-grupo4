@@ -184,7 +184,7 @@ export const RecommendationsList = memo(function RecommendationsList({
           
           <div className="bg-purple-50 rounded-lg p-6 text-center group hover:shadow-md transition-all duration-200 border border-purple-200">
             <div className="text-4xl font-bold text-purple-600 mb-2">
-              {(items.reduce((sum, item) => sum + item.distance_km, 0) / items.length).toFixed(1)}
+              {(items.reduce((sum, item) => sum + (item.restaurant.distance_km || 0), 0) / items.length).toFixed(1)}
               <span className="text-lg text-gray-500 ml-1">km</span>
             </div>
             <div className="text-gray-700 font-medium">Distancia promedio</div>

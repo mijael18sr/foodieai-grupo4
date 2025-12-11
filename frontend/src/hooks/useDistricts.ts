@@ -3,7 +3,8 @@
  * Proporciona datos, estado de carga y funciones para interactuar con distritos
  */
 import { useState, useEffect, useCallback } from 'react';
-import districtService, { District, DistrictStatistics } from '../services/districtService';
+import districtService from '../services/districtService';
+import type { District, DistrictStatistics } from '../services/districtService';
 
 interface UseDistrictsReturn {
   districts: District[];

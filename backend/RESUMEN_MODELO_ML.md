@@ -57,17 +57,44 @@ Positivo     1,826 1,375 29,274
 
 ---
 
+## BALANCEO DE DATOS
+
+### ¿Tiene balanceo?
+**SÍ - BALANCEO PARCIAL (IMPLÍCITO)**
+
+### Técnicas Aplicadas
+✅ **class_weight='balanced'** - Logistic Regression ajusta pesos automáticamente  
+✅ **Split estratificado** - Mantiene proporción de clases en train/test  
+✅ **ComplementNB** - Algoritmo diseñado para datos desbalanceados  
+✅ **Ensemble Voting** - Combina modelos para reducir sesgo  
+
+### Técnicas NO Aplicadas
+❌ **SMOTE** - No genera datos sintéticos  
+❌ **Under-sampling** - No elimina datos de clase mayoritaria  
+
+### Distribución Estimada
+- **Positivo**: ~81-83% (mayoría - reseñas favorables)
+- **Neutro**: ~8-10% (minoritaria - difícil de detectar)
+- **Negativo**: ~7-9% (minoritaria - vocabulario distintivo)
+
+**Nota**: Dataset naturalmente desbalanceado (restaurantes de alta calidad = más reseñas positivas)
+
+**Ver análisis completo**: `ANALISIS_BALANCEO_DATOS.md`
+
+---
+
 ## CARACTERÍSTICAS TÉCNICAS
 
 ### Rendimiento por Clase
-- **Positivo**: Muy buena detección (recall alto)
-- **Negativo**: Buena precisión 
-- **Neutro**: Más difícil de detectar (normal en análisis de sentimientos)
+- **Positivo**: Muy buena detección (recall alto) - Beneficiado por mayor cantidad de datos
+- **Negativo**: Buena precisión - Vocabulario distintivo ayuda a la detección
+- **Neutro**: Más difícil de detectar - **Impacto del desbalanceo más notable**
 
 ### Datos del Modelo
 - **Entrenamiento**: 80% (159,856 registros)
 - **Prueba**: 20% (39,965 registros)  
-- **Split**: Estratificado con random_state=42
+- **Split**: Estratificado con random_state=42 (mantiene proporciones)
+- **Balanceo**: Implícito vía class_weight='balanced'
 
 ---
 
