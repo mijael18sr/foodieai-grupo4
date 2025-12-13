@@ -28,7 +28,7 @@ terraform {
 variable "aws_region" {
   description = "AWS region"
   type        = string
-  default     = "us-east-1"
+  default     = "us-east-2"  # Ohio - tu región actual
 }
 
 variable "project_name" {
@@ -44,9 +44,9 @@ variable "environment" {
 }
 
 variable "instance_type" {
-  description = "EC2 instance type (t2.micro for Free Tier)"
+  description = "EC2 instance type (t3.micro for Free Tier in us-east-2)"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "key_pair_name" {
@@ -338,7 +338,7 @@ resource "aws_instance" "app" {
     #!/bin/bash
     set -e
     
-    AWS_REGION="${aws_region}"
+    AWS_REGION="us-east-2"
     AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
     ECR_REGISTRY="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
     

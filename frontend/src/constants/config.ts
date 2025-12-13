@@ -1,10 +1,19 @@
 // Application Configuration Constants
 
+// In production, use relative URLs to leverage nginx proxy (avoids mixed content issues)
+// In development, use the full URL from env or localhost
+const isProduction = import.meta.env.PROD;
+const devApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
+// S3 bucket for static assets (images) - reduces backend load
+const S3_ASSETS_URL = 'https://foodie-ai-static-assets.s3.us-east-2.amazonaws.com';
+
 export const API_CONFIG = {
-  BASE_URL: 'http://localhost:8000',
+  BASE_URL: isProduction ? '' : devApiUrl,
   TIMEOUT: 10000,
   DEFAULT_TOP_N: 10,
-  IMAGES_BASE_URL: 'http://localhost:8000/docs/figures',
+  // Use S3 for images in production, local backend in development
+  IMAGES_BASE_URL: isProduction ? `${S3_ASSETS_URL}/figures` : `${devApiUrl}/docs/figures`,
 } as const;
 
 export const UI_CONFIG = {

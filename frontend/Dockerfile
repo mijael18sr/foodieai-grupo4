@@ -34,20 +34,16 @@ FROM nginx:alpine AS production
 # Install curl for healthcheck
 RUN apk add --no-cache curl
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
-
 # Copy built assets from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Create non-root user
-RUN addgroup -g 1001 -S nginx-group && \
-    adduser -S -D -H -u 1001 -h /var/cache/nginx -s /sbin/nologin -G nginx-group nginx-user && \
-    chown -R nginx-user:nginx-group /var/cache/nginx /var/run /var/log/nginx /usr/share/nginx/html && \
-    chmod -R 755 /usr/share/nginx/html
+# Copy custom nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Use non-root user
-USER nginx-user
+# Create directories and set permissions
+RUN mkdir -p /tmp/nginx && \
+    chown -R nginx:nginx /var/cache/nginx /tmp/nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
 
 # Expose port
 EXPOSE 80

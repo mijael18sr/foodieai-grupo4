@@ -246,3 +246,19 @@ docker-compose.override.yml
 # Documentation builds
 docs/_build/
 docs/site/
+
+# Terraform
+infrastructure/terraform/.terraform/
+infrastructure/terraform/*.tfstate
+infrastructure/terraform/*.tfstate.backup
+infrastructure/terraform/.terraform.lock.hcl
+*.tfvars
+!*.tfvars.example
+
+# AWS/SSH Keys - NEVER commit these!
+*.pem
+*.key
+restaurant-recommender-key.pem
+
+# S3 Policy files (contains AWS account info)
+policy.json
