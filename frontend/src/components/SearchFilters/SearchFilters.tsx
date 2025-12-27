@@ -1,6 +1,8 @@
-import { useState, memo, useCallback } from 'react';
+import { useState, memo, useCallback, useEffect } from 'react';
 import type { UserLocation, RecommendationFilters, UserPreferences } from '../../types/api';
 import { DistrictSelector } from '../DistrictSelector';
+import { LocationPickerMap } from '../LocationPickerMap';
+import { useLocation } from '../../hooks';
 
 interface SearchFiltersProps {
   categories: string[];
@@ -20,8 +22,10 @@ export const SearchFilters = memo(function SearchFilters({
   onSearch,
   loading = false,
 }: SearchFiltersProps) {
+  const { location: geoLocation, isLoading: geoLoading, error: geoError, requestLocation } = useLocation();
+  
   const [location, setLocation] = useState<UserLocation>({
-    lat: -12.0464, // Centro de Lima
+    lat: -12.0464,
     long: -77.0428
   });
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -29,6 +33,19 @@ export const SearchFilters = memo(function SearchFilters({
   const [minRating, setMinRating] = useState<number>(0);
   const [maxDistance, setMaxDistance] = useState<number>(10);
   const [topN, setTopN] = useState<number>(10);
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  const [locationAddress, setLocationAddress] = useState<string>('');
+
+  useEffect(() => {
+    if (geoLocation) {
+      setLocation({ lat: geoLocation.lat, long: geoLocation.long });
+    }
+  }, [geoLocation]);
+
+  const handleMapConfirm = useCallback((lat: number, lng: number, address?: string) => {
+    setLocation({ lat, long: lng });
+    if (address) setLocationAddress(address);
+  }, []);
 
   const handleSearch = useCallback(() => {
     const preferences: UserPreferences = selectedCategory 
@@ -43,24 +60,6 @@ export const SearchFilters = memo(function SearchFilters({
 
     onSearch(location, preferences, filters, topN);
   }, [location, selectedCategory, minRating, maxDistance, selectedDistrict, topN, onSearch]);
-
-  const getCurrentLocation = useCallback(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            lat: position.coords.latitude,
-            long: position.coords.longitude,
-          });
-        },
-        () => {
-          alert('No se pudo obtener tu ubicación. Usando ubicación por defecto (Centro de Lima).');
-        }
-      );
-    } else {
-      alert('Tu navegador no soporta geolocalización.');
-    }
-  }, []);
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8 animate-slide-up">
@@ -122,11 +121,44 @@ export const SearchFilters = memo(function SearchFilters({
             </div>
 
             <button
-              onClick={getCurrentLocation}
-              className="w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 font-semibold shadow-sm hover:shadow-md"
+              onClick={() => setIsMapOpen(true)}
+              className="w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 font-semibold shadow-sm hover:shadow-md flex items-center justify-center gap-2"
             >
-              📱 Usar mi ubicación actual
+              🗺️ Seleccionar ubicación en mapa
             </button>
+            
+            <button
+              onClick={requestLocation}
+              disabled={geoLoading}
+              className="w-full bg-blue-100 text-blue-700 px-4 py-3 rounded-lg hover:bg-blue-200 transition-colors duration-200 font-medium flex items-center justify-center gap-2"
+            >
+              {geoLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-700 border-t-transparent"></div>
+                  Obteniendo...
+                </>
+              ) : (
+                <>📍 Usar GPS automático</>
+              )}
+            </button>
+            
+            {locationAddress && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                <p className="text-xs text-green-600 font-medium mb-1">📍 Ubicación seleccionada:</p>
+                <p className="text-sm text-green-800 line-clamp-2">{locationAddress}</p>
+              </div>
+            )}
+            
+            {geoError && (
+              <p className="text-sm text-amber-600 flex items-center gap-1">
+                <span>⚠️</span> {geoError}
+              </p>
+            )}
+            {geoLocation?.accuracy && !locationAddress && (
+              <p className="text-xs text-gray-500">
+                Precisión GPS: ±{Math.round(geoLocation.accuracy)}m
+              </p>
+            )}
           </div>
         </div>
 
@@ -268,6 +300,15 @@ export const SearchFilters = memo(function SearchFilters({
           )}
         </button>
       </div>
+
+      {/* Location Picker Map Modal */}
+      <LocationPickerMap
+        isOpen={isMapOpen}
+        onClose={() => setIsMapOpen(false)}
+        onConfirm={handleMapConfirm}
+        initialLat={location.lat !== 0 ? location.lat : undefined}
+        initialLng={location.long !== 0 ? location.long : undefined}
+      />
     </div>
   );
 });

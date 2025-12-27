@@ -262,3 +262,12 @@ restaurant-recommender-key.pem
 
 # S3 Policy files (contains AWS account info)
 policy.json
+
+# AWS Environment files (contain secrets)
+.env.aws
+!.env.aws.example
+
+# MLflow local data
+mlruns/
+mlflow.db
+backend/mlflow/.env

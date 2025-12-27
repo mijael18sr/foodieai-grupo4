@@ -6,16 +6,29 @@
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-foodie.softprimesolutions.com-green.svg)](https://foodie.softprimesolutions.com)
+
+## 🌐 Demo en Producción
+
+| Servicio | URL |
+|----------|-----|
+| **🍽️ Aplicación Web** | https://foodie.softprimesolutions.com |
+| **📚 API Documentation** | https://foodie.softprimesolutions.com/api/v1/docs |
+| **❤️ Health Check** | https://foodie.softprimesolutions.com/api/v1/health/status |
 
 ## Descripción
 
 Sistema de recomendación que utiliza Machine Learning y análisis de sentimientos para sugerir restaurantes en Lima. Combina técnicas de procesamiento de lenguaje natural con algoritmos de recomendación personalizada.
 
 **Características:**
-- Análisis de sentimientos con 84.36% accuracy
-- Recomendaciones basadas en ubicación y preferencias  
-- API REST con FastAPI y frontend React moderno
-- 706 restaurantes y 378,969 reviews procesadas
+- 🤖 Análisis de sentimientos con **84.36% accuracy**
+- 📍 Recomendaciones basadas en **ubicación y preferencias**
+- 🗺️ Mapa interactivo estilo Uber para selección de ubicación
+- ⭐ Sistema de favoritos con persistencia local
+- 📜 Historial de búsquedas recientes
+- 📚 Manual de usuario (PDF + Video tutorial)
+- 📊 **1,052 restaurantes** y **185,666 reviews** procesadas
+- 🏙️ **7 distritos** y **14 categorías** gastronómicas
 
 ## Inicio Rápido
 
@@ -51,18 +64,32 @@ npm install && npm run dev
 
 ```
 restaurant-recommender-ml/
-├── backend/                 # API FastAPI + ML
+├── backend/                 # API FastAPI + ML (ver backend/README.md)
 │   ├── data/               # Datasets y modelos
-│   │   ├── models/        # Modelos ML entrenados
-│   │   └── processed/     # Datos procesados
+│   │   ├── models/        # Modelos ML entrenados (.pkl)
+│   │   ├── processed/     # Datos procesados para ML
+│   │   └── raw/           # Datos originales
 │   ├── src/               # Código fuente (Clean Architecture)
+│   │   ├── application/   # Casos de uso y servicios
+│   │   ├── domain/        # Entidades y repositorios
+│   │   ├── infrastructure/# Configuración e implementaciones
+│   │   ├── ml/            # Modelos de Machine Learning
+│   │   └── presentation/  # API REST (FastAPI)
+│   ├── notebooks/         # Jupyter Notebooks (EDA)
 │   ├── requirements.txt   # Dependencias Python
-│   └── start_server.py   # Iniciar servidor
-├── frontend/              # React + TypeScript
-│   ├── src/              # Componentes React
-│   ├── package.json     # Dependencias Node.js
-│   └── vite.config.ts   # Configuración build
-└── README.md            # Este archivo
+│   └── start_server.py    # Script para iniciar servidor
+├── frontend/              # React + TypeScript (ver frontend/README.md)
+│   ├── src/
+│   │   ├── components/    # Componentes React reutilizables
+│   │   ├── hooks/         # Custom hooks (favoritos, historial)
+│   │   ├── pages/         # Páginas principales
+│   │   ├── services/      # Cliente API
+│   │   └── types/         # Tipos TypeScript
+│   ├── public/            # Archivos estáticos (manual, videos)
+│   ├── package.json       # Dependencias Node.js
+│   └── vite.config.ts     # Configuración de Vite
+├── DEPLOYMENT_GUIDE.md    # Guía de despliegue en AWS
+└── README.md              # Este archivo
 ```
 
 ## API Endpoints Principales
@@ -87,12 +114,21 @@ POST /api/v1/recommendations
 
 ## Métricas del Modelo
 
-| Métrica | Valor | Estado |
-|---------|-------|--------|
-| **Accuracy** | 84.36% | Excelente |
-| **Precision (Positivos)** | 95.8% | Muy alto |
-| **Recall (Positivos)** | 90.1% | Muy alto |
-| **Tiempo respuesta** | <100ms | Rápido |
+| Métrica | Valor | Descripción |
+|---------|-------|-------------|
+| **Accuracy** | 84.36% | Precisión general del modelo |
+| **Precision (Positivos)** | 95.8% | Fiabilidad de predicciones positivas |
+| **Recall (Positivos)** | 90.1% | Cobertura de reseñas positivas |
+| **Tiempo respuesta** | <100ms | Latencia promedio por request |
+
+### Datos del Sistema
+
+| Dato | Cantidad |
+|------|----------|
+| Restaurantes | 1,052 |
+| Reviews analizadas | 185,666 |
+| Distritos cubiertos | 7 |
+| Categorías gastronómicas | 14 |
 
 ## Solución de Problemas
 
@@ -118,14 +154,15 @@ python reentrenar_modelo_limpio.py
 ## Archivos de Datos
 
 **Incluidos en el repositorio:**
-- Modelos ML entrenados (sentiment_model.pkl, etc.)
-- Datasets pequeños (<50MB)
-- 706 restaurantes procesados
+- ✅ Modelos ML entrenados (`sentiment_model.pkl`, etc.)
+- ✅ Datasets procesados (<50MB cada uno)
+- ✅ 1,052 restaurantes procesados
 
 **Excluidos (>100MB):**
-- `Lima_Restaurants_2025_08_13.csv` (131MB)
-- `reviews_con_sentimiento.csv` (1.3GB)
-- Los modelos funcionan sin estos archivos grandes
+- ❌ `Lima_Restaurants_2025_08_13.csv` (131MB)
+- ❌ `reviews_con_sentimiento.csv` (1.3GB)
+
+> ⚠️ **Nota:** Los modelos funcionan perfectamente sin estos archivos grandes.
 
 ## Testing
 
@@ -377,6 +414,61 @@ F1-Score: 84.64%
 
 ---
 
+## 📊 MLOps con MLflow
+
+El proyecto implementa prácticas de **MLOps** usando MLflow para el ciclo de vida de los modelos.
+
+### Características
+
+| Característica | Descripción |
+|----------------|-------------|
+| **Experiment Tracking** | Registro automático de entrenamientos |
+| **Model Registry** | Versionado y gestión de modelos |
+| **Métricas** | accuracy, f1, precision, recall por clase |
+| **Artefactos** | Modelos, vectorizadores, gráficos |
+
+### Iniciar MLflow
+
+```bash
+# Con Docker Compose (recomendado)
+docker-compose --profile mlflow up -d
+
+# MLflow UI disponible en:
+# http://localhost:5000
+```
+
+### Entrenar con Tracking
+
+```bash
+cd backend
+python src/ml/training/train_with_mlflow.py
+```
+
+### Métricas Registradas en MLflow
+
+```
+📊 Experimento: sentiment-analysis
+├── accuracy: 0.8436
+├── f1_weighted: 0.8464
+├── cohen_kappa: 0.7234
+├── positivo_precision: 0.958
+├── positivo_recall: 0.901
+├── neutro_precision: 0.723
+├── negativo_precision: 0.812
+└── ...15 métricas más
+```
+
+### Artefactos Guardados
+
+- `model/` - Modelo Sklearn (VotingClassifier)
+- `vectorizer/vectorizer.pkl` - TF-IDF Vectorizer
+- `confusion_matrix.png` - Matriz de confusión
+- `metrics_by_class.png` - Gráfico de métricas
+
+> 📖 Ver [backend/README.md](backend/README.md#-mlops-con-mlflow) para documentación completa de MLflow.
+
+---
+
 ## ESTRUCTURA DEL PROYECTO
 
 ```
@@ -473,6 +565,10 @@ DEBUG=true
 # ML Configuration 
 MODEL_PATH=data/models/
 DATA_PATH=data/
+
+# MLflow Configuration
+MLFLOW_TRACKING_URI=http://localhost:5000
+MLFLOW_EXPERIMENT_NAME=sentiment-analysis
 
 # CORS Configuration
 FRONTEND_URL=http://localhost:5173

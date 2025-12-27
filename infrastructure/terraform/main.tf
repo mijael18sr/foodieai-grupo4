@@ -61,6 +61,13 @@ variable "allowed_ssh_cidr" {
   default     = "0.0.0.0/0"  # Restrict in production
 }
 
+variable "db_password" {
+  description = "Password for MLflow PostgreSQL database"
+  type        = string
+  sensitive   = true
+  default     = "MLflow2025Secure!"  # Change in production via tfvars
+}
+
 # =============================================================================
 # PROVIDER
 # =============================================================================
@@ -116,7 +123,7 @@ resource "aws_vpc" "main" {
   }
 }
 
-# Public Subnet (only public - no NAT Gateway to save costs)
+# Public Subnet 1 (for EC2)
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
@@ -124,7 +131,19 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
   
   tags = {
-    Name = "${var.project_name}-public-subnet"
+    Name = "${var.project_name}-public-subnet-1"
+  }
+}
+
+# Public Subnet 2 (required for RDS subnet group - needs 2 AZs)
+resource "aws_subnet" "public_2" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = data.aws_availability_zones.available.names[1]
+  map_public_ip_on_launch = true
+  
+  tags = {
+    Name = "${var.project_name}-public-subnet-2"
   }
 }
 
@@ -151,9 +170,15 @@ resource "aws_route_table" "public" {
   }
 }
 
-# Route Table Association
+# Route Table Association - Subnet 1
 resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.public.id
+}
+
+# Route Table Association - Subnet 2
+resource "aws_route_table_association" "public_2" {
+  subnet_id      = aws_subnet.public_2.id
   route_table_id = aws_route_table.public.id
 }
 
@@ -221,6 +246,74 @@ resource "aws_security_group" "app" {
   
   tags = {
     Name = "${var.project_name}-app-sg"
+  }
+}
+
+# Security Group for RDS PostgreSQL
+resource "aws_security_group" "rds" {
+  name        = "${var.project_name}-rds-sg"
+  description = "Security group for RDS PostgreSQL"
+  vpc_id      = aws_vpc.main.id
+  
+  # PostgreSQL access from EC2 only
+  ingress {
+    description     = "PostgreSQL from EC2"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.app.id]
+  }
+  
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  tags = {
+    Name = "${var.project_name}-rds-sg"
+  }
+}
+
+# =============================================================================
+# RDS POSTGRESQL (Free Tier: db.t3.micro, 20GB)
+# =============================================================================
+
+# DB Subnet Group (requires 2 subnets in different AZs)
+resource "aws_db_subnet_group" "mlflow" {
+  name       = "${var.project_name}-db-subnet-group"
+  subnet_ids = [aws_subnet.public.id, aws_subnet.public_2.id]
+  
+  tags = {
+    Name = "${var.project_name}-db-subnet-group"
+  }
+}
+
+# RDS PostgreSQL Instance for MLflow
+resource "aws_db_instance" "mlflow" {
+  identifier           = "${var.project_name}-mlflow-db"
+  engine               = "postgres"
+  engine_version       = "15.10"
+  instance_class       = "db.t3.micro"  # Free Tier eligible
+  allocated_storage    = 20              # Free Tier: 20GB
+  storage_type         = "gp2"
+  
+  db_name              = "mlflow"
+  username             = "mlflow_admin"
+  password             = var.db_password  # Set via variable or tfvars
+  
+  vpc_security_group_ids = [aws_security_group.rds.id]
+  db_subnet_group_name   = aws_db_subnet_group.mlflow.name
+  publicly_accessible    = false  # Only accessible from EC2
+  
+  skip_final_snapshot    = true   # For dev/testing
+  deletion_protection    = false  # Easy cleanup
+  
+  backup_retention_period = 0     # Disable backups to save costs
+  
+  tags = {
+    Name = "${var.project_name}-mlflow-db"
   }
 }
 
@@ -532,18 +625,41 @@ output "deploy_command" {
   value       = "ssh -i ${var.key_pair_name}.pem ec2-user@${aws_eip.app.public_ip} '/home/ec2-user/deploy.sh'"
 }
 
+output "rds_endpoint" {
+  description = "RDS PostgreSQL endpoint for MLflow"
+  value       = aws_db_instance.mlflow.endpoint
+}
+
+output "rds_database_name" {
+  description = "MLflow database name"
+  value       = aws_db_instance.mlflow.db_name
+}
+
+output "mlflow_url" {
+  description = "MLflow UI URL"
+  value       = "http://${aws_eip.app.public_ip}:5000"
+}
+
+output "mlflow_tracking_uri" {
+  description = "MLflow tracking URI for Python client"
+  value       = "http://${aws_eip.app.public_ip}:5000"
+}
+
 # =============================================================================
 # FREE TIER COST SUMMARY:
 # -----------------------------------------------------------------------------
 # Resource              | Free Tier Allowance      | Expected Cost
 # -----------------------------------------------------------------------------
-# EC2 t2.micro         | 750 hours/month          | $0 (within limit)
+# EC2 t3.micro         | 750 hours/month          | $0 (within limit)
 # EBS gp3 30GB         | 30 GB/month              | $0 (within limit)
 # Elastic IP           | 1 EIP (when associated)  | $0 (associated)
 # ECR                  | 500 MB storage           | $0 (within limit)
 # CloudWatch           | Basic monitoring FREE    | $0
 # VPC/Subnet/IGW       | Always FREE              | $0
+# RDS db.t3.micro      | 750 hours/month          | $0 (within limit)
+# RDS Storage 20GB     | 20 GB/month              | $0 (within limit)
+# S3 (artifacts)       | 5 GB storage             | $0 (within limit)
 # Data Transfer        | 100 GB/month outbound    | $0 (within limit)
 # -----------------------------------------------------------------------------
-# ESTIMATED MONTHLY COST: $0 (within Free Tier limits)
+# ESTIMATED MONTHLY COST: $0 (within Free Tier limits for 12 months)
 # =============================================================================

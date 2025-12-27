@@ -1,4 +1,3 @@
-// Component exports
 export { RestaurantCard } from './RestaurantCard';
 export { SearchFilters } from './SearchFilters';
 export { RecommendationsList } from './RecommendationsList';
@@ -11,7 +10,9 @@ export { ErrorBoundary } from './ErrorBoundary';
 export { Dashboard } from './Dashboard';
 export { DistrictSelector } from './DistrictSelector';
 export { Explore } from './Explore';
+export { LocationPickerMap } from './LocationPickerMap';
+export { Favorites } from './Favorites';
+export { SearchHistory } from './SearchHistory';
 
-// Icon exports - centralized icon system
 export * from './Icons';
 export { SentimentPanel } from './Sentiment/SentimentPanel';

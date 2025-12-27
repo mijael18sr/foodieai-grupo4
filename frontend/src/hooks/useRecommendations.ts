@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import RestaurantApiService from '../services/api';
-import type { RecommendationResponse, RecommendationRequest } from '../types/api';
+import type { RecommendationResponse, RecommendationRequest, RecommendationItem } from '../types/api';
 
 export interface UseRecommendationsOptions {
   autoFetch?: boolean;
@@ -11,7 +11,7 @@ export interface UseRecommendationsReturn {
   recommendations: RecommendationResponse | null;
   loading: boolean;
   error: string | null;
-  fetchRecommendations: (request: RecommendationRequest) => Promise<void>;
+  fetchRecommendations: (request: RecommendationRequest) => Promise<RecommendationItem[] | null>;
   fetchSimpleRecommendations: (
     lat: number,
     long: number,
@@ -30,16 +30,18 @@ export function useRecommendations(options: UseRecommendationsOptions = {}): Use
 
   const clearError = () => setError(null);
 
-  const fetchRecommendations = async (request: RecommendationRequest) => {
+  const fetchRecommendations = async (request: RecommendationRequest): Promise<RecommendationItem[] | null> => {
     setLoading(true);
     setError(null);
     
     try {
       const response = await RestaurantApiService.getRecommendations(request);
       setRecommendations(response);
+      return response.recommendations;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error getting recommendations';
       setError(errorMessage);
+      return null;
     } finally {
       setLoading(false);
     }

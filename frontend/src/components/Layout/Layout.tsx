@@ -10,6 +10,7 @@ interface LayoutProps {
   totalDistricts?: number;
   currentView?: string;
   onNavigate?: (viewId: string) => void;
+  favoritesCount?: number;
 }
 
 export const Layout = memo(function Layout({
@@ -19,6 +20,7 @@ export const Layout = memo(function Layout({
   totalDistricts = 0,
   currentView = 'home',
   onNavigate,
+  favoritesCount = 0,
 }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isHoveringEdge, setIsHoveringEdge] = useState(false);
@@ -124,6 +126,7 @@ export const Layout = memo(function Layout({
             onItemClick={handleSidebarItemClick}
             onNavigate={onNavigate}
             activeItem={currentView}
+            favoritesCount={favoritesCount}
           />
         </nav>
 

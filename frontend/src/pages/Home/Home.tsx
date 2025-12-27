@@ -1,15 +1,27 @@
-import { useState, memo, useCallback } from 'react';
-import { Layout, SearchFilters, RecommendationsList, AIChat, SentimentPanel, Dashboard, Explore } from '../../components';
-import { useApiData, useRecommendations } from '../../hooks';
+import { useState, memo, useCallback, useRef } from 'react';
+import { Layout, SearchFilters, RecommendationsList, AIChat, SentimentPanel, Dashboard, Explore, Favorites, SearchHistory } from '../../components';
+import { useApiData, useRecommendations, useFavorites, useSearchHistory } from '../../hooks';
 import type { UserLocation, RecommendationFilters, UserPreferences } from '../../types/api';
+import type { SearchHistoryItem } from '../../hooks';
+import { Manual } from '../Manual';
+import { About } from '../About';
 
 export const Home = memo(function Home() {
   const { categories, districts, error: dataError } = useApiData();
   const { recommendations, loading: recLoading, error: recError, fetchRecommendations } = useRecommendations();
+  const { favorites, removeFavorite, toggleFavorite, clearFavorites, count: favoritesCount, isFavorite } = useFavorites();
+  const { history, addSearch, removeSearch, clearHistory: clearSearchHistory } = useSearchHistory();
 
   const [hasSearched, setHasSearched] = useState(false);
   const [currentView, setCurrentView] = useState('home');
   const [isChatOpen, setIsChatOpen] = useState(false);
+  
+  const lastSearchParamsRef = useRef<{
+    location: UserLocation;
+    locationName?: string;
+    preferences?: UserPreferences;
+    filters?: RecommendationFilters;
+  } | null>(null);
 
   const handleChatToggle = useCallback(() => {
     setIsChatOpen(prev => !prev);
@@ -17,7 +29,6 @@ export const Home = memo(function Home() {
 
   const handleNavigation = useCallback((viewId: string) => {
     setCurrentView(viewId);
-    // Resetear búsqueda cuando cambie de vista
     if (viewId !== 'recommendations') {
       setHasSearched(false);
     }
@@ -27,10 +38,11 @@ export const Home = memo(function Home() {
     location: UserLocation,
     preferences?: UserPreferences,
     filters?: RecommendationFilters,
-    topN?: number
+    topN?: number,
+    locationName?: string
   ) => {
-    console.log('🔍 Starting search with params:', { location, preferences, filters, topN });
     setHasSearched(true);
+    lastSearchParamsRef.current = { location, locationName, preferences, filters };
     
     const request = {
       user_location: location,
@@ -39,9 +51,25 @@ export const Home = memo(function Home() {
       top_n: topN || 10,
     };
 
-    console.log('📤 Request object:', request);
-    await fetchRecommendations(request);
-  }, [fetchRecommendations]);
+    const results = await fetchRecommendations(request);
+    
+    if (results && results.length > 0) {
+      addSearch(location, locationName, preferences, filters, results);
+    }
+  }, [fetchRecommendations, addSearch]);
+
+  const handleRepeatSearch = useCallback((item: SearchHistoryItem) => {
+    setCurrentView('recommendations');
+    setTimeout(() => {
+      handleSearch(
+        item.location,
+        item.preferences,
+        item.filters,
+        10,
+        item.locationName
+      );
+    }, 100);
+  }, [handleSearch]);
 
   // Helper functions para categorías
   const getCategoryDescription = (category: string) => {
@@ -390,6 +418,8 @@ export const Home = memo(function Home() {
                 recommendations={recommendations}
                 loading={recLoading}
                 error={recError}
+                onToggleFavorite={toggleFavorite}
+                isFavorite={isFavorite}
               />
             )}
 
@@ -444,7 +474,6 @@ export const Home = memo(function Home() {
               </div>
             </div>
 
-            {/* Botón de regreso */}
             <div className="text-center pt-8">
               <button
                 onClick={() => handleNavigation('home')}
@@ -455,6 +484,33 @@ export const Home = memo(function Home() {
             </div>
           </div>
         );
+
+      case 'favorites':
+        return (
+          <Favorites
+            favorites={favorites}
+            onRemove={removeFavorite}
+            onClear={clearFavorites}
+            onNavigate={handleNavigation}
+          />
+        );
+
+      case 'history':
+        return (
+          <SearchHistory
+            history={history}
+            onRemove={removeSearch}
+            onClear={clearSearchHistory}
+            onRepeatSearch={handleRepeatSearch}
+            onNavigate={handleNavigation}
+          />
+        );
+
+      case 'manual':
+        return <Manual />;
+
+      case 'about':
+        return <About />;
 
       default:
         return (
@@ -477,10 +533,10 @@ export const Home = memo(function Home() {
     <Layout 
       currentView={currentView} 
       onNavigate={handleNavigation}
+      favoritesCount={favoritesCount}
     >
       {renderCurrentView()}
       
-      {/* Chat Button */}
       <button
         onClick={handleChatToggle}
         className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center justify-center z-50 transform hover:scale-110"

@@ -1,12 +1,14 @@
 import { memo } from 'react';
 import { RestaurantCard } from '../RestaurantCard';
-import type { RecommendationResponse } from '../../types/api';
+import type { RecommendationResponse, Restaurant } from '../../types/api';
 
 interface RecommendationsListProps {
   recommendations: RecommendationResponse | null;
   loading: boolean;
   error: string | null;
   onRestaurantClick?: (restaurantId: string) => void;
+  onToggleFavorite?: (restaurant: Restaurant) => void;
+  isFavorite?: (restaurantId: string) => boolean;
 }
 
 export const RecommendationsList = memo(function RecommendationsList({
@@ -14,6 +16,8 @@ export const RecommendationsList = memo(function RecommendationsList({
   loading,
   error,
   onRestaurantClick,
+  onToggleFavorite,
+  isFavorite,
 }: RecommendationsListProps) {
   // Render simple debug info first
   if (loading || error || !recommendations) {
@@ -145,10 +149,28 @@ export const RecommendationsList = memo(function RecommendationsList({
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {items.map((recommendation, index) => (
           <div key={recommendation.restaurant.id || index} className="relative group">
-            {/* Ranking Badge */}
             <div className="absolute -top-4 -left-4 z-20 bg-blue-600 text-white rounded-2xl w-12 h-12 flex items-center justify-center font-bold text-lg shadow-lg group-hover:scale-110 transition-transform duration-300">
               #{index + 1}
             </div>
+            
+            {onToggleFavorite && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleFavorite(recommendation.restaurant);
+                }}
+                className={`absolute -top-3 -right-3 z-20 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 ${
+                  isFavorite?.(recommendation.restaurant.id)
+                    ? 'bg-pink-500 text-white hover:bg-pink-600'
+                    : 'bg-white text-gray-400 hover:text-pink-500 hover:bg-pink-50 border border-gray-200'
+                }`}
+                title={isFavorite?.(recommendation.restaurant.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+              >
+                <svg className="w-5 h-5" fill={isFavorite?.(recommendation.restaurant.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </button>
+            )}
             
             <RestaurantCard
               recommendation={recommendation}

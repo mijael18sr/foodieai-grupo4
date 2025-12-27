@@ -4,6 +4,9 @@
 
 import { LOCATION_CONFIG, API_CONFIG } from '../constants/config';
 
+// Re-export error handling utilities
+export * from './errorHandler';
+
 // Type definitions
 export interface Coordinates {
   lat: number;

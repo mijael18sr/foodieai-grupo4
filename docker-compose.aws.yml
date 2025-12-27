@@ -1,0 +1,115 @@
+# =====================================================
+# Docker Compose for AWS Deployment with RDS + MLflow
+# =====================================================
+# Usage: docker-compose -f docker-compose.aws.yml up -d
+#
+# Prerequisites:
+#   - RDS PostgreSQL instance running
+#   - Set environment variables in .env.aws file
+
+services:
+  # ===========================================
+  # Backend API Service
+  # ===========================================
+  backend:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/restaurant-recommender-backend:latest
+    container_name: restaurant-backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - DEBUG=false
+      - ENVIRONMENT=production
+      - MODEL_PATH=/app/data/models/
+      - DATA_PATH=/app/data/
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - AWS_DEFAULT_REGION=${AWS_REGION:-us-east-2}
+    volumes:
+      - backend-logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health/status')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - app-network
+    depends_on:
+      mlflow:
+        condition: service_healthy
+
+  # ===========================================
+  # Frontend Service
+  # ===========================================
+  frontend:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/restaurant-recommender-frontend:latest
+    container_name: restaurant-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - app-network
+
+  # ===========================================
+  # MLflow Tracking Server (with RDS PostgreSQL)
+  # ===========================================
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.17.0
+    container_name: restaurant-mlflow
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      # PostgreSQL backend (RDS)
+      - MLFLOW_BACKEND_STORE_URI=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}
+      # S3 artifacts
+      - MLFLOW_DEFAULT_ARTIFACT_ROOT=s3://${S3_BUCKET}/mlflow-artifacts
+      - AWS_DEFAULT_REGION=${AWS_REGION:-us-east-2}
+    command: >
+      mlflow server
+      --backend-store-uri postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}
+      --default-artifact-root s3://${S3_BUCKET}/mlflow-artifacts
+      --host 0.0.0.0
+      --port 5000
+      --workers 1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+# ===========================================
+# Networks
+# ===========================================
+networks:
+  app-network:
+    driver: bridge
+    name: app-network
+
+# ===========================================
+# Volumes
+# ===========================================
+volumes:
+  backend-logs:
+    name: backend-logs

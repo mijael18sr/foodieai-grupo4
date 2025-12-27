@@ -1,0 +1,55 @@
+Guía de Despliegue Paso a Paso
+(Minimal Viable Deployment)
+
+Introducción
+Esta guía ofrece un camino simplificado para que los estudiantes puedan desplegar sus
+proyectos de Machine Learning (regresión, clasificación, deep learning o no supervisado) de
+manera funcional y clara, sin necesidad de una infraestructura compleja. El objetivo es que
+cualquier grupo pueda mostrar un demo ejecutable, un dashboard o un wireframe que
+evidencie el valor de su proyecto.
+
+Parte 1: Preparar el Modelo
+• Los modelos pueden provenir de distintos enfoques:
+• Regresión o clasificación con scikit-learn (ej. regresión lineal, árboles de decisión,
+random forest).
+• Redes neuronales simples con TensorFlow o PyTorch.
+• Modelos de Machine Learning no supervisado (ej. K-Means, DBSCAN) aplicados a
+segmentación.
+• Guardar el modelo entrenado en un formato portable: `.pkl`, `.joblib`, `.h5` o `.pt`.
+
+Parte 2: Crear una API Mínima
+Se recomienda usar FastAPI o Flask para exponer el modelo a través de un endpoint. Esto
+permite probar el modelo desde Postman, curl o integrarlo con una interfaz web.
+• Cargar el modelo guardado al iniciar la API.
+• Definir un endpoint `/predict` que reciba datos en JSON (ej. características numéricas o
+imágenes).
+• Devolver la predicción como respuesta clara (ej. valor numérico, clase, etiquetas de
+cluster).
+
+Parte 3: Crear un Dashboard o Mockup
+Los grupos deben pensar en la experiencia del usuario final. Un dashboard simple en
+Streamlit o Gradio puede ser suficiente para mostrar resultados.
+• Incluir gráficas claras: barras, dispersión, curvas ROC, métricas clave.
+• Para ML no supervisado: mostrar clusters o segmentaciones con colores.
+• Permitir zoom o interacción en gráficas para mejorar accesibilidad.
+• Agregar botones de ayuda (?) que expliquen conceptos o métricas mostradas.
+
+• Usar etiquetas claras y un diseño sencillo, sin sobrecargar al usuario.
+
+Parte 4: Diseño de Software y Experiencia de Usuario
+• Aplicar principios de Design Thinking: pensar en las necesidades del usuario antes de
+programar.
+• Preguntarse: ¿qué problema resuelve este dashboard o app?, ¿qué mejora o automatiza?
+• Asegurarse de que la aplicación sea entendible incluso para personas sin conocimientos
+técnicos.
+• Considerar accesibilidad: colores adecuados, texto legible, opciones de interacción
+simples.
+• Cada decisión de diseño debe tener sentido y aportar valor.
+
+Checklist antes de Entregar
+• El modelo está entrenado y guardado en un formato portable.
+• La API (FastAPI/Flask) responde correctamente en local con `/predict`.
+• El dashboard/mockup muestra métricas y resultados de manera clara.
+• La experiencia de usuario está pensada (etiquetas, accesibilidad, botones de ayuda).
+• La aplicación fue probada en equipo antes de la presentación.
+• Todos los integrantes entienden el flujo de usuario y lo pueden explicar.
